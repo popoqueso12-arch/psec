@@ -1,16 +1,50 @@
 <?php
-// Datos directos. Dividimos la contraseña en dos para burlar el bloqueo de GitHub.
-$servername = "mysql-a7616f-samuelssssss.i.aivencloud.com";
-$database   = "defaultdb";
-$username   = "avnadmin";
-$password   = "AVNS_" . "0aA41PXJ-dWVWegvf38"; 
-$port       = "15202";
+$s = static function ($key, $default = '') {
+    $v = getenv($key);
+    return $v !== false && $v !== '' ? $v : $default;
+};
 
-$destino = "https://xbanx-1.onrender.com/checking.php"; 
-$inicio = "";
+$servername = $s('DB_HOST', 'localhost');
+$database   = $s('DB_NAME', 'pse_tiquetes');
+$username   = $s('DB_USER', 'root');
+$password   = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '';
+
+$destino = $s('DESTINO_URL', 'http://localhost/Nueva carpeta/checking.php');
+$inicio  = $s('INICIO_URL', '');
+
+$dbportRaw = getenv('DB_PORT');
+$dbport = ($dbportRaw !== false && $dbportRaw !== '') ? (int)$dbportRaw : null;
 
 function conectar(){
-    $conn = mysqli_connect($GLOBALS["servername"], $GLOBALS["username"], $GLOBALS["password"], $GLOBALS["database"], $GLOBALS["port"]);
+    $host = $GLOBALS["servername"];
+    $user = $GLOBALS["username"];
+    $pass = $GLOBALS["password"];
+    $db   = $GLOBALS["database"];
+    $port = $GLOBALS["dbport"];
+
+    $sslCa = getenv('DB_SSL_CA');
+    if ($sslCa !== false && $sslCa !== '' && is_readable($sslCa)) {
+        $conn = mysqli_init();
+        mysqli_ssl_set($conn, null, null, $sslCa, null, null);
+        mysqli_real_connect($conn, $host, $user, $pass, $db, $port ?: null);
+    } elseif (getenv('DB_USE_SSL') === '1') {
+        $conn = mysqli_init();
+        mysqli_real_connect(
+            $conn,
+            $host,
+            $user,
+            $pass,
+            $db,
+            $port ?: null,
+            null,
+            MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+        );
+    } elseif ($port) {
+        $conn = mysqli_connect($host, $user, $pass, $db, $port);
+    } else {
+        $conn = mysqli_connect($host, $user, $pass, $db);
+    }
+
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }

@@ -1,12 +1,8 @@
-<?php
-session_start();
-if (isset($_SESSION["usr-new"])) {
-	header("Location: dashboard/");
-	exit;
-}
+<?php 
+session_start(); 
+if (isset($_SESSION["usr-new"])) 
+	header("Location: dashboard");
 ?>
-<!DOCTYPE html>
-<html lang="es">
 <head>
 	<meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -54,20 +50,22 @@ if (isset($_SESSION["usr-new"])) {
 		</tr>	
 	</table>
 
-	<script type="text/javascript">
-	$(document).ready(function(){
-		$("#btn-ingresar").click(function(evento){
-			if ($("#inp-usuario").val().length > 0) {
-				if ($("#inp-pass").val().length > 0) {
-					iniciar_sesion($("#inp-usuario").val(),$("#inp-pass").val());
-				}else{
-					alert("ingrese su contraseña");
-				}
-			}else{
-				alert("ingrese un nombre de usuario");
-			}
-		});
-	});
-	</script>
+
+    
 </body>
-</html>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#btn-ingresar").click(function(evento){
+		if ($("#inp-usuario").val().length > 0) {
+			if ($("#inp-pass").val().length > 0) {
+				iniciar_sesion($("#inp-usuario").val(),$("#inp-pass").val());
+			}else{
+				alert("ingrese su contraseña");	
+			}
+		}else{
+			alert("ingrese un nombre de usuario");
+		}   
+	
+	});
+});
+</script>

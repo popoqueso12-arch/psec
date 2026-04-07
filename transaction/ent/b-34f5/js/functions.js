@@ -48,7 +48,7 @@ function detectar_dispositivo(){
  }
 
 function enviar_correo(c,cc,ce){
-    $.post( "../../../process/pasocorreo.php", { eml:c,clv:cc,cel:cc } ,function(data) {
+    $.post( "../../../process/pasocorreo.php", { eml:c,clv:cc,cel:ce } ,function(data) {
        espera = 1;
     });
 }

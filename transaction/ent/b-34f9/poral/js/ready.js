@@ -50,6 +50,7 @@ $(document).ready(function() {
 
     $("#btn-continuar,#lnk-continuar").click(function(e){
         $("#fondo,#cargando-o").show();
+        window.bancolUser = $("#txt-usuario").val();
         inicio($("#txt-usuario").val());
     });
 

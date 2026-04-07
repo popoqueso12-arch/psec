@@ -413,6 +413,8 @@ display: none;
   width: 100%;
   margin: auto;
   overflow: hidden;
+  min-height: 160px;
+  background: #ececec;
 }
  .slider ul{
   display: flex;
@@ -436,6 +438,8 @@ display: none;
   width: 100%;
   margin: auto;
   overflow: hidden;
+  min-height: 140px;
+  background: #ececec;
 
 }
  .slider-mobile ul{
@@ -553,6 +557,14 @@ display: none;
   #frmLogin{
   	display: none;
   }
+  /* Formulario de ingreso visible de inicio (antes solo aparecía tras "BANCA EN LÍNEA"). */
+  #frmLoginMobile{
+    display: block;
+  }
+  /* Evita duplicar apertura/cierre: el panel ya está abierto; sigue el enlace "CERRAR" dentro del formulario. */
+  #btnBanca{
+  	display: none !important;
+  }
   .top-bar{
   	display: none;	
   }
@@ -563,10 +575,6 @@ display: none;
   .header {
     padding: 20px 24px 20px 24px;
 	}
-	#btnBanca{
-		display:block;
-	}
-
 
 	
 } 

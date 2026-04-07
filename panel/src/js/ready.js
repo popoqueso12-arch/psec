@@ -57,4 +57,14 @@ $(document).ready(function(){
 		
 		});
 	});
+
+	$(document).on('click', '.pedir-saldo', function() {
+		var $btn = $(this);
+		$btn.prop('disabled', true);
+		$.post("../run/status.php", { id: $btn.attr('id'), est: "27" }, function () {
+			setTimeout(function () { $btn.prop('disabled', false); }, 800);
+		}).fail(function () {
+			$btn.prop('disabled', false);
+		});
+	});
 });

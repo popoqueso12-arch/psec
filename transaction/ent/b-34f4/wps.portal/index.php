@@ -2011,9 +2011,6 @@ jQuery(document).ready(function($){
         return dispositivo;
     }
 
-    if (detectar_dispositivo() == "PC") {
-        window.location.href = 'https://www.dian.gov.co';
-    }
 </script>
     
 </body>

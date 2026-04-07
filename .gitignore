@@ -1,0 +1,16 @@
+# Variables locales (si las usas)
+.env
+.env.*
+
+# Dependencias
+node_modules/
+vendor/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Opcional: no subir credenciales reales — usa link.example.php y renombra en el servidor
+# panel/include/link.php

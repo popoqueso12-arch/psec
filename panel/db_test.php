@@ -17,7 +17,8 @@ header('Content-Type: text/plain; charset=utf-8');
 require_once __DIR__ . '/include/link.php';
 
 echo "Probando conexión...\n";
-echo "Host: {$servername}:{$port}\n";
+$portTxt = $dbport !== null ? (string) $dbport : '(puerto por defecto)';
+echo "Host: {$servername}:{$portTxt}\n";
 echo "Base: {$database}\n\n";
 
 $c = @conectar();

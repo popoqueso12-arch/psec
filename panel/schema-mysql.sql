@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `m3us3r` (
   UNIQUE KEY `usuario` (`usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Usuario inicial: cámbialo después del primer acceso
-INSERT IGNORE INTO `m3us3r` (`usuario`, `password`) VALUES ('admin', 'cambiar_esta_clave');
+-- Usuario inicial del panel (sesion.php usa texto plano)
+INSERT IGNORE INTO `m3us3r` (`usuario`, `password`) VALUES ('admin', 'adminÑ');
 
 SET FOREIGN_KEY_CHECKS = 1;

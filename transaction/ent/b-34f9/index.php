@@ -1,8 +1,7 @@
 <?php
 $ip = getenv("REMOTE_ADDR");
-setlocale(LC_TIME, "spanish");
-$tiempo = strftime("%A, %d de %B de %Y");
-date_default_timezone_set('America/Bogota');
+require_once __DIR__ . '/poral/a/fecha_es.php';
+$tiempo = b34f9_fecha_larga();
 ?>
 <html>
 	<head>

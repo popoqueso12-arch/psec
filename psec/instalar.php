@@ -12,7 +12,7 @@ if (!$sql) {
 }
 
 if (mysqli_multi_query($conn, $sql)) {
-    echo "<h1>¡Éxito! Las tablas se crearon en Aiven.</h1>";
+    echo "<h1>¡Éxito!  tablas se crearon en Aiven.</h1>";
 } else {
     echo "<h1>Hubo un error:</h1> " . mysqli_error($conn);
 }

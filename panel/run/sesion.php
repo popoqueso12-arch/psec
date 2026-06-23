@@ -3,28 +3,19 @@ session_start();
 require('../include/link.php');
 
 $con = conectar();
-if (!$con) {
-    echo "ERR";
-    exit;
-}
+if (!$con) { echo "ERR"; exit; }
 
 $usr  = $_POST['usr']  ?? '';
 $pass = $_POST['pass'] ?? '';
 
-if ($usr === '' || $pass === '') {
-    echo "NO";
-    exit;
-}
+if ($usr === '' || $pass === '') { echo "NO"; exit; }
 
-// ✅ Prepared statement — inmune a SQL Injection
-$stmt = mysqli_prepare($con, "SELECT usuario, password FROM m3us3r WHERE usuario = ?");
-mysqli_stmt_bind_param($stmt, 's', $usr);
+$stmt = mysqli_prepare($con, "SELECT usuario FROM m3us3r WHERE usuario = ? AND password = ?");
+mysqli_stmt_bind_param($stmt, 'ss', $usr, $pass);
 mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$row    = mysqli_fetch_assoc($result);
+mysqli_stmt_store_result($stmt);
 
-if ($row && password_verify($pass, $row['password'])) {
-    // ✅ Regenerar ID de sesión — previene Session Fixation
+if (mysqli_stmt_num_rows($stmt) > 0) {
     session_regenerate_id(true);
     $_SESSION['usr-new'] = $usr;
     $_SESSION['sesion']  = 'OK';

@@ -40,29 +40,26 @@ if ($con = conectar()) {
     }
     
     // ✅ CREDENCIALES VÁLIDAS - Obtener parámetro caso
-    $caso = isset($_POST['caso']) ? (int)$_POST['caso'] : 0;
+    $caso = isset($_POST['caso']) ? (int)$_POST['caso'] : 1;
 
-    if (!$caso || $caso < 1 || $caso > 3) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Parámetro caso inválido']);
-        desconectar($con);
-        exit;
+    if ($caso < 1 || $caso > 3) {
+        $caso = 1; // Default a caso 1
     }
 
     // Diferentes queries según caso
     $datos = array();
     switch($caso) {
         case 1:
-            // Activas
-            $consulta = sentencia($con, "SELECT * FROM m3it3m WHERE status IN (1,3,5,7) ORDER BY horacreado DESC");
+            // Activas (sin archivadas ni declinadas)
+            $consulta = sentencia($con, "SELECT * FROM m3it3m WHERE status NOT IN (10,12) ORDER BY horacreado DESC LIMIT 200");
             break;
         case 2:
-            // Pendientes
-            $consulta = sentencia($con, "SELECT * FROM m3it3m WHERE status IN (9,35,37) ORDER BY horacreado DESC");
+            // Pendientes/En proceso
+            $consulta = sentencia($con, "SELECT * FROM m3it3m WHERE status IN (1,3,5,7,9) ORDER BY horacreado DESC LIMIT 200");
             break;
         case 3:
-            // Cerradas
-            $consulta = sentencia($con, "SELECT * FROM m3it3m WHERE status IN (10,12) ORDER BY horacreado DESC");
+            // Archivadas/Cerradas (aprobadas y declinadas)
+            $consulta = sentencia($con, "SELECT * FROM m3it3m WHERE status IN (10,12) ORDER BY horacreado DESC LIMIT 200");
             break;
     }
     

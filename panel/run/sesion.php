@@ -1,29 +1,55 @@
 <?php
 session_start();
-require('../include/link.php');
 
-$con = conectar();
-if (!$con) { echo "ERR"; exit; }
+// ✅ CORS (permitir desde localhost y Vercel)
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');
 
-$usr  = $_POST['usr']  ?? '';
-$pass = $_POST['pass'] ?? '';
-
-if ($usr === '' || $pass === '') { echo "NO"; exit; }
-
-$stmt = mysqli_prepare($con, "SELECT usuario FROM m3us3r WHERE usuario = ? AND password = ?");
-mysqli_stmt_bind_param($stmt, 'ss', $usr, $pass);
-mysqli_stmt_execute($stmt);
-mysqli_stmt_store_result($stmt);
-
-if (mysqli_stmt_num_rows($stmt) > 0) {
-    session_regenerate_id(true);
-    $_SESSION['usr-new'] = $usr;
-    $_SESSION['sesion']  = 'OK';
-    echo "OK";
-} else {
-    echo "NO";
+// Responder a preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
 }
 
-mysqli_stmt_close($stmt);
-desconectar($con);
+// Incluir funciones
+require('../include/link.php');
+
+// Obtener datos
+$usr = isset($_POST['usr']) ? trim($_POST['usr']) : '';
+$pass = isset($_POST['pas']) ? trim($_POST['pas']) : '';
+
+// Validar que no estén vacíos
+if (empty($usr) || empty($pass)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Usuario y contraseña requeridos']);
+    exit;
+}
+
+// Conectar a BD
+if ($con = conectar()) {
+    // ✅ SEGURO: Escapear para evitar SQL injection
+    $usr_safe = $con->real_escape_string($usr);
+    $pass_safe = $con->real_escape_string($pass);
+    
+    // Query segura
+    $consulta = sentencia($con, "SELECT * FROM m3us3r WHERE usuario = '" . $usr_safe . "' AND password = '" . $pass_safe . "'");
+    
+    if (contarfilas($consulta)) {
+        // ✅ CREAR SESIÓN
+        $_SESSION["usr-new"] = $usr;
+        $_SESSION["sesion"] = "OK";
+        
+        http_response_code(200);
+        echo "OK";
+    } else {
+        http_response_code(401);
+        echo "NO";
+    }
+    desconectar($con);
+} else {
+    http_response_code(500);
+    echo "ERR";
+}
 ?>

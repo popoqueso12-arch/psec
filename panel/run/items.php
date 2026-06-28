@@ -1,43 +1,56 @@
 <?php
 session_start();
 
-// ✅ CORS (permitir desde localhost y Vercel)
+// ✅ CORS
 header('Access-Control-Allow-Origin: http://localhost:5173');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Credentials: true');
 header('Content-Type: application/json');
 
-// Responder a preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// ✅ VALIDAR SESIÓN - CRÍTICO
-if (!isset($_SESSION["sesion"]) || $_SESSION["sesion"] !== "OK") {
+// ✅ VALIDAR CREDENCIALES (POST)
+$usr = isset($_POST['usr']) ? trim($_POST['usr']) : '';
+$pas = isset($_POST['pas']) ? trim($_POST['pas']) : '';
+
+if (empty($usr) || empty($pas)) {
     http_response_code(401);
-    echo json_encode(['error' => 'No autenticado']);
+    echo json_encode(['error' => 'Credenciales requeridas']);
     exit;
 }
 
-// Incluir funciones
+// Validar credenciales en BD
 require('../include/link.php');
 
-// Obtener parámetro caso
-$caso = isset($_POST['caso']) ? (int)$_POST['caso'] : 0;
-
-if (!$caso || $caso < 1 || $caso > 3) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Parámetro caso inválido']);
-    exit;
-}
-
-// Conectar a BD
 if ($con = conectar()) {
-    $datos = array();
+    $usr_safe = $con->real_escape_string($usr);
+    $pas_safe = $con->real_escape_string($pas);
     
+    $consulta = sentencia($con, "SELECT * FROM m3us3r WHERE usuario = '" . $usr_safe . "' AND password = '" . $pas_safe . "'");
+    
+    if (!contarfilas($consulta)) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Credenciales inválidas']);
+        desconectar($con);
+        exit;
+    }
+    
+    // ✅ CREDENCIALES VÁLIDAS - Obtener parámetro caso
+    $caso = isset($_POST['caso']) ? (int)$_POST['caso'] : 0;
+
+    if (!$caso || $caso < 1 || $caso > 3) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Parámetro caso inválido']);
+        desconectar($con);
+        exit;
+    }
+
     // Diferentes queries según caso
+    $datos = array();
     switch($caso) {
         case 1:
             // Activas
@@ -62,7 +75,7 @@ if ($con = conectar()) {
     
     desconectar($con);
     
-    // Devolver JSON
+    // ✅ Devolver JSON
     http_response_code(200);
     echo json_encode($datos);
 } else {

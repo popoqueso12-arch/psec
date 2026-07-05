@@ -59,7 +59,7 @@ if ($con = conectar()) {
     }
 
     // Estados permitidos
-    $estados_permitidos = [1, 3, 5, 7, 9, 10, 12, 35, 37];
+    $estados_permitidos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 35, 37];
     if (!in_array($est, $estados_permitidos)) {
         http_response_code(400);
         echo json_encode(['error' => 'Estado no permitido']);

@@ -1,12 +1,12 @@
 <?php
 header('Content-Type: application/json');
 
-// Credenciales Aiven MySQL
-$db_host = 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
-$db_port = 26767;
-$db_user = 'avnadmin';
-$db_pass = 'AVNS_ntoX9d2Nu632L7lQ-Ca';
-$db_name = 'defaultdb';
+// Leer credenciales de variables de Render (Environment Variables)
+$db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
+$db_port = getenv('DB_PORT') ?: 26767;
+$db_user = getenv('DB_USER') ?: 'avnadmin';
+$db_pass = getenv('DB_PASSWORD') ?: 'default_password';
+$db_name = getenv('DB_NAME') ?: 'defaultdb';
 
 // Conexión con SSL
 $mysqli = new mysqli(

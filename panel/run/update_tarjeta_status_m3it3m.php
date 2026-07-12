@@ -1,5 +1,22 @@
 <?php
+// 🔒 CORS SEGURO - Solo para Vercel
+$allowed_origin = 'https://essa-blush.vercel.app';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if ($origin === $allowed_origin) {
+  header('Access-Control-Allow-Origin: ' . $allowed_origin);
+  header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+  header('Access-Control-Allow-Headers: Content-Type, Authorization');
+  header('Access-Control-Allow-Credentials: true');
+}
+
 header('Content-Type: application/json');
+
+// Manejar OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(200);
+  exit;
+}
 
 // Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';

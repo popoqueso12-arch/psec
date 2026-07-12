@@ -2,11 +2,11 @@
 header('Content-Type: application/json');
 
 // Leer credenciales de variables de Render (Environment Variables)
-$db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
-$db_port = getenv('DB_PORT') ?: 26767;
-$db_user = getenv('DB_USER') ?: 'avnadmin';
-$db_pass = getenv('DB_PASSWORD') ?: 'default_password';
-$db_name = getenv('DB_NAME') ?: 'defaultdb';
+$db_host = getenv('DB_HOST') ?: ;
+$db_port = getenv('DB_PORT') ?: 
+$db_user = getenv('DB_USER') ?: 
+$db_pass = getenv('DB_PASSWORD') ?: 
+$db_name = getenv('DB_NAME') ?: '
 
 // Conexión con SSL
 $mysqli = new mysqli(

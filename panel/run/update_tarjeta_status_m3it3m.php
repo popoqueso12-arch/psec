@@ -18,6 +18,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit;
 }
 
+// ⏱️ RATE LIMITING - Proteger contra spam
+require_once __DIR__ . '/rate-limit.php';
+
+function getClientIP() {
+  if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+    return $_SERVER['HTTP_CF_CONNECTING_IP'];
+  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    return trim($ips[0]);
+  } else {
+    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+  }
+}
+
+$client_ip = getClientIP();
+checkRateLimit($client_ip, 10, 60, 900); // 10 intentos por minuto (operaciones)
+
 // Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
 $db_port = getenv('DB_PORT') ?: 26767;

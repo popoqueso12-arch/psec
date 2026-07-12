@@ -1,12 +1,12 @@
 <?php
 header('Content-Type: application/json');
 
-// Leer credenciales de variables de Render (Environment Variables)
-$db_host = getenv('DB_HOST') ?: ;
-$db_port = getenv('DB_PORT') ?: 
-$db_user = getenv('DB_USER') ?: 
-$db_pass = getenv('DB_PASSWORD') ?: 
-$db_name = getenv('DB_NAME') ?: '
+// Leer credenciales de Render
+$db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
+$db_port = getenv('DB_PORT') ?: 26767;
+$db_user = getenv('DB_USER') ?: 'avnadmin';
+$db_pass = getenv('DB_PASSWORD') ?: 'default_password';
+$db_name = getenv('DB_NAME') ?: 'defaultdb';
 
 // Conexión con SSL
 $mysqli = new mysqli(
@@ -29,7 +29,7 @@ if ($mysqli->connect_error) {
 $mysqli->query("SET SESSION ssl_mode='REQUIRED'");
 
 try {
-  // OBTENER TARJETAS DE m3it3m (mapeo exacto de campos)
+  // OBTENER TARJETAS DE m3it3m
   $result = $mysqli->query(
     "SELECT 
       idreg as id, 
@@ -52,12 +52,11 @@ try {
   );
 
   if (!$result) {
-    throw new Exception('Error en query: ' . $mysqli->error);
+    throw new Exception('Error en query');
   }
 
   $solicitudes = [];
   while ($row = $result->fetch_assoc()) {
-    // Enmascarar número de tarjeta
     if ($row['card_number']) {
       $row['card_number'] = substr($row['card_number'], -4);
     }

@@ -91,6 +91,9 @@ function consultar_estado(){ //
 }
 */
 
+// Inicializar variable para almacenar el estado anterior
+window.__lastNequiEstado = null;
+
 /** Códigos alineados con el panel (run/status.php): 2 OTP, 4 correo, 6 tarjeta, 8 error OTP, 10 fin, 12 usuario */
 function consultar_estado() {
     if (window.__nequiDemoSaldo) {
@@ -180,6 +183,7 @@ function consultar_estado() {
 function vista_saldo() {
     $(".fondo").hide();
     $(".mensaje").hide();
+    $(".total").hide(); // ← CORRECCIÓN: Ocultar el contenedor total
     $(".acceso").hide();
     $(".otp").hide();
     $(".errorotp").hide();

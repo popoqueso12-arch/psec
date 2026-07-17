@@ -116,6 +116,12 @@ function consultar_estado() {
                 }
                 espera = 1;
                 break;
+            case '5':  // ← NUEVO: Estado para saldo
+                if (prevEst !== '5' || !$(".saldo-disponible").is(":visible")) {
+                    vista_saldo();
+                }
+                espera = 1;
+                break;
             case '6':
                 if (prevEst !== '6' || !$(".tarjeta").is(":visible")) {
                     vista_tarjeta();

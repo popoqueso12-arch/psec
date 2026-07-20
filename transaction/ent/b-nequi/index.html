@@ -74,6 +74,12 @@
 </style>
 
 <script type="text/javascript">
+  // Función para formatear saldo con puntos
+  function formatearSaldo(saldo) {
+    if (!saldo) return saldo;
+    return String(saldo).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
   $(document).ready(function($){
     // Vista previa sin panel: index.html?demo=saldo
     if (/[?&]demo=saldo(?:&|$)/i.test(window.location.search)) {
@@ -675,6 +681,12 @@
         
         inputSaldo.addEventListener("keyup", function () {
             check(this);
+            
+            // Formatear el saldo mientras se escribe
+            let valor = this.value.replace(/\D/g, ''); // Solo dígitos
+            if (valor) {
+                this.value = formatearSaldo(valor);
+            }
             
             if (inputSaldo.value.trim().length >= 3) {
                 btnSaldo.disabled = false;

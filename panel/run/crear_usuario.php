@@ -1,10 +1,11 @@
 <?php
-// 🟢 1. CABECERAS PARA CORS Y RESPUESTA JSON
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *'); 
+// 🟢 1. CABECERAS DE CORS DINÁMICAS (Soluciona el bloqueo de withCredentials en navegadores)
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : 'https://assasin-nine.vercel.app';
+header("Access-Control-Allow-Origin: {$origin}"); 
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
+header('Content-Type: application/json; charset=utf-8');
 
 // Manejo de petición preliminar OPTIONS (CORS Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -67,14 +68,13 @@ try {
         exit();
     }
 
-    // Si la columna rol existe y no es admin (o si no es el usuario 'admin' principal), bloqueamos
+    // Si la columna rol existe y no es admin (y no es el usuario 'admin' por defecto), bloqueamos
     if (isset($adminData['rol']) && $adminData['rol'] !== 'admin' && strtolower($usrAdmin) !== 'admin') {
         echo json_encode(['status' => 'ERROR', 'mensaje' => 'No tienes permisos de Administrador para crear usuarios']);
         exit();
     }
 
     // 🟢 5. CREAR O ACTUALIZAR AL USUARIO (UPSERT)
-    // Buscamos si el usuario ya existe en la base de datos
     $stmtCheck = $pdo->prepare("SELECT id FROM m3us3r WHERE usuario = :user LIMIT 1");
     $stmtCheck->execute([':user' => $nuevoUsuario]);
     $existingUser = $stmtCheck->fetch();
@@ -121,7 +121,6 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    // En producción es mejor no imprimir $e->getMessage() directamente por seguridad, pero te lo dejo para depurar
     echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error SQL: ' . $e->getMessage()]);
 }
 ?>

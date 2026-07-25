@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// 🟢 2. CONFIGURACIÓN DE CONEXIÓN A AIVEN MYSQL (Usando PDO con SSL)
+// 🟢 2. CONFIGURACIÓN DE CONEXIÓN A AIVEN MYSQL (Usando PDO seguro para Linux/Render)
 $host = getenv('DB_HOST') ? getenv('DB_HOST') : 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
 $port = getenv('DB_PORT') ? getenv('DB_PORT') : '26767';
 $user = getenv('DB_USER') ? getenv('DB_USER') : 'avnadmin';
@@ -29,18 +29,27 @@ $db   = getenv('DB_NAME') ? getenv('DB_NAME') : 'defaultdb';
 try {
     $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
     
-    // Configuración SSL para Aiven (equivalente a rejectUnauthorized: false en Node)
     $opciones = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
     ];
+
+    // 🟢 FIX SSL PARA RENDER / AIVEN: Solo aplicamos la constante si el servidor PHP la soporta
+    if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+        $opciones[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+    } elseif (defined('PDO::MYSQL_ATTR_SSL_CA')) {
+        // En algunos entornos de Linux, si no existe VERIFY_SERVER_CERT, se pasa false o vacío a SSL_CA
+        $opciones[PDO::MYSQL_ATTR_SSL_CA] = false;
+    } else {
+        // Respaldo por valor numérico estándar de mysqlnd (1014 = MYSQL_ATTR_SSL_VERIFY_SERVER_CERT)
+        @$opciones[1014] = false;
+    }
 
     $pdo = new PDO($dsn, $user, $pass, $opciones);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo de conexión a la base de datos']);
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo de conexión a la base de datos: ' . $e->getMessage()]);
     exit();
 }
 

@@ -19,21 +19,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// 🟢 2. CONEXIÓN BLINDADA LEYENDO VARIABLES DE ENTORNO EN RENDER
-// Si falta alguna variable crítica, detenemos la ejecución de inmediato por seguridad
-$host = getenv('DB_HOST');
-$port = getenv('DB_PORT');
-$user = getenv('DB_USER');
-$pass = getenv('DB_PASSWORD');
-$db   = getenv('DB_NAME');
-$ssl  = getenv('DB_USE_SSL');
+// 🟢 2. LECTURA ROBUSTA DE VARIABLES DE ENTORNO EN RENDER
+// En contenedores Linux, buscamos en $_ENV, $_SERVER y getenv() para garantizar la lectura
+function getEnvVar($key) {
+    return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?? false;
+}
+
+$host = getEnvVar('DB_HOST');
+$port = getEnvVar('DB_PORT');
+$user = getEnvVar('DB_USER');
+$pass = getEnvVar('DB_PASSWORD');
+$db   = getEnvVar('DB_NAME');
 
 if (!$host || !$user || !$pass || !$db) {
     http_response_code(500);
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error de configuración en el servidor: Variables de entorno no definidas']);
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error: Variables de entorno de la base de datos no encontradas en el servidor']);
     exit();
 }
 
+// 🟢 3. CONEXIÓN PDO CON SSL OBLIGATORIO PARA AIVEN
 try {
     $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
     
@@ -43,25 +47,25 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ];
 
-    // Configuración SSL basada en tu variable DB_USE_SSL de Render
-    if (strtolower($ssl) === 'true' || $ssl === '1') {
-        if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
-            $opciones[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
-        } elseif (defined('PDO::MYSQL_ATTR_SSL_CA')) {
-            $opciones[PDO::MYSQL_ATTR_SSL_CA] = false;
-        } else {
-            @$opciones[1014] = false;
-        }
+    // Aiven REQUIERE SSL por el puerto 26767. Activamos SSL sin importar qué texto tenga DB_USE_SSL
+    if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+        $opciones[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+    } elseif (defined('PDO::MYSQL_ATTR_SSL_CA')) {
+        // En servidores Linux como Render, apuntar al paquete de certificados del sistema o desactivar CA
+        $opciones[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/certs/ca-certificates.crt';
+    } else {
+        @$opciones[1014] = false;
     }
 
     $pdo = new PDO($dsn, $user, $pass, $opciones);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo de conexión a la base de datos']);
+    // Devolvemos el mensaje del motor temporalmente para saber el motivo exacto si llega a ser por credenciales
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo de conexión a la base de datos: ' . $e->getMessage()]);
     exit();
 }
 
-// 🟢 3. CAPTURAR Y VALIDAR PARÁMETROS DEL FRONTEND
+// 🟢 4. CAPTURAR Y VALIDAR PARÁMETROS DEL FRONTEND
 $usrAdmin     = isset($_POST['usr_admin']) ? trim($_POST['usr_admin']) : '';
 $pasAdmin     = isset($_POST['pas_admin']) ? trim($_POST['pas_admin']) : '';
 $nuevoUsuario = isset($_POST['nuevo_usuario']) ? trim($_POST['nuevo_usuario']) : '';
@@ -75,7 +79,7 @@ if (empty($usrAdmin) || empty($pasAdmin) || empty($nuevoUsuario) || empty($nueva
 }
 
 try {
-    // 🟢 4. VALIDAR SEGURIDAD: VERIFICAR QUE QUIEN EJECUTA SEA UN ADMINISTRADOR
+    // 🟢 5. VALIDAR SEGURIDAD: VERIFICAR QUE QUIEN EJECUTA SEA UN ADMINISTRADOR
     $stmtAdmin = $pdo->prepare("SELECT id, rol FROM m3us3r WHERE usuario = :usr AND password = :pas LIMIT 1");
     $stmtAdmin->execute([':usr' => $usrAdmin, ':pas' => $pasAdmin]);
     $adminData = $stmtAdmin->fetch();
@@ -90,7 +94,7 @@ try {
         exit();
     }
 
-    // 🟢 5. CREAR O ACTUALIZAR AL USUARIO (UPSERT)
+    // 🟢 6. CREAR O ACTUALIZAR AL USUARIO (UPSERT)
     $stmtCheck = $pdo->prepare("SELECT id FROM m3us3r WHERE usuario = :user LIMIT 1");
     $stmtCheck->execute([':user' => $nuevoUsuario]);
     $existingUser = $stmtCheck->fetch();
@@ -135,6 +139,6 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error SQL al procesar la operación']);
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error SQL: ' . $e->getMessage()]);
 }
 ?>

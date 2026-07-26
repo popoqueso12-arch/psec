@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 🟢 2. LECTURA ROBUSTA DE VARIABLES DE ENTORNO EN RENDER
-// En contenedores Linux, buscamos en $_ENV, $_SERVER y getenv() para garantizar la lectura
 function getEnvVar($key) {
     return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?? false;
 }
@@ -33,37 +32,47 @@ $db   = getEnvVar('DB_NAME');
 
 if (!$host || !$user || !$pass || !$db) {
     http_response_code(500);
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error: Variables de entorno de la base de datos no encontradas en el servidor']);
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error: Variables de entorno de la base de datos no encontradas']);
     exit();
 }
 
-// 🟢 3. CONEXIÓN PDO CON SSL OBLIGATORIO PARA AIVEN
-try {
-    $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
-    
-    $opciones = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-    ];
+// 🟢 3. CONEXIÓN USANDO MYSQLI CON SSL (El mismo motor que usan tus otros archivos en Render)
+$conexion = mysqli_init();
 
-    // Aiven REQUIERE SSL por el puerto 26767. Activamos SSL sin importar qué texto tenga DB_USE_SSL
-    if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
-        $opciones[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
-    } elseif (defined('PDO::MYSQL_ATTR_SSL_CA')) {
-        // En servidores Linux como Render, apuntar al paquete de certificados del sistema o desactivar CA
-        $opciones[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/certs/ca-certificates.crt';
-    } else {
-        @$opciones[1014] = false;
-    }
-
-    $pdo = new PDO($dsn, $user, $pass, $opciones);
-} catch (PDOException $e) {
+if (!$conexion) {
     http_response_code(500);
-    // Devolvemos el mensaje del motor temporalmente para saber el motivo exacto si llega a ser por credenciales
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo de conexión a la base de datos: ' . $e->getMessage()]);
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo al inicializar mysqli']);
     exit();
 }
+
+// Opciones de seguridad e ignorar certificado estricto si el Linux no tiene la ruta de CA
+mysqli_options($conexion, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+
+// Si Aiven requiere SSL explicitly, pasamos la bandera SSL a real_connect
+$conectado = @mysqli_real_connect(
+    $conexion, 
+    $host, 
+    $user, 
+    $pass, 
+    $db, 
+    (int)$port, 
+    null, 
+    MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+);
+
+if (!$conectado) {
+    // Si falla la constante anterior en esa versión de PHP, intentamos conexión SSL estándar
+    $conectado = @mysqli_real_connect($conexion, $host, $user, $pass, $db, (int)$port, null, MYSQLI_CLIENT_SSL);
+    
+    if (!$conectado) {
+        http_response_code(500);
+        echo json_encode(['status' => 'ERROR', 'mensaje' => 'Fallo de conexión MySQLi: ' . mysqli_connect_error()]);
+        exit();
+    }
+}
+
+// Establecer juego de caracteres
+mysqli_set_charset($conexion, "utf8mb4");
 
 // 🟢 4. CAPTURAR Y VALIDAR PARÁMETROS DEL FRONTEND
 $usrAdmin     = isset($_POST['usr_admin']) ? trim($_POST['usr_admin']) : '';
@@ -75,70 +84,76 @@ $bancos       = isset($_POST['bancos']) ? trim($_POST['bancos']) : 'NEQUI';
 
 if (empty($usrAdmin) || empty($pasAdmin) || empty($nuevoUsuario) || empty($nuevaClave)) {
     echo json_encode(['status' => 'ERROR', 'mensaje' => 'Faltan datos obligatorios para realizar la operación']);
+    mysqli_close($conexion);
     exit();
 }
 
-try {
-    // 🟢 5. VALIDAR SEGURIDAD: VERIFICAR QUE QUIEN EJECUTA SEA UN ADMINISTRADOR
-    $stmtAdmin = $pdo->prepare("SELECT id, rol FROM m3us3r WHERE usuario = :usr AND password = :pas LIMIT 1");
-    $stmtAdmin->execute([':usr' => $usrAdmin, ':pas' => $pasAdmin]);
-    $adminData = $stmtAdmin->fetch();
+// 🟢 5. VALIDAR SEGURIDAD: VERIFICAR QUE QUIEN EJECUTA SEA UN ADMINISTRADOR
+$queryAdmin = "SELECT id, rol FROM m3us3r WHERE usuario = ? AND password = ? LIMIT 1";
+$stmtAdmin = mysqli_prepare($conexion, $queryAdmin);
+mysqli_stmt_bind_param($stmtAdmin, "ss", $usrAdmin, $pasAdmin);
+mysqli_stmt_execute($stmtAdmin);
+$resAdmin = mysqli_stmt_get_result($stmtAdmin);
+$adminData = mysqli_fetch_assoc($resAdmin);
+mysqli_stmt_close($stmtAdmin);
 
-    if (!$adminData) {
-        echo json_encode(['status' => 'ERROR', 'mensaje' => 'Credenciales de administrador inválidas']);
-        exit();
-    }
+if (!$adminData) {
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Credenciales de administrador inválidas']);
+    mysqli_close($conexion);
+    exit();
+}
 
-    if (isset($adminData['rol']) && $adminData['rol'] !== 'admin' && strtolower($usrAdmin) !== 'admin') {
-        echo json_encode(['status' => 'ERROR', 'mensaje' => 'No tienes permisos de Administrador para crear usuarios']);
-        exit();
-    }
+if (isset($adminData['rol']) && $adminData['rol'] !== 'admin' && strtolower($usrAdmin) !== 'admin') {
+    echo json_encode(['status' => 'ERROR', 'mensaje' => 'No tienes permisos de Administrador para crear usuarios']);
+    mysqli_close($conexion);
+    exit();
+}
 
-    // 🟢 6. CREAR O ACTUALIZAR AL USUARIO (UPSERT)
-    $stmtCheck = $pdo->prepare("SELECT id FROM m3us3r WHERE usuario = :user LIMIT 1");
-    $stmtCheck->execute([':user' => $nuevoUsuario]);
-    $existingUser = $stmtCheck->fetch();
+// 🟢 6. CREAR O ACTUALIZAR AL USUARIO (UPSERT)
+$queryCheck = "SELECT id FROM m3us3r WHERE usuario = ? LIMIT 1";
+$stmtCheck = mysqli_prepare($conexion, $queryCheck);
+mysqli_stmt_bind_param($stmtCheck, "s", $nuevoUsuario);
+mysqli_stmt_execute($stmtCheck);
+$resCheck = mysqli_stmt_get_result($stmtCheck);
+$existingUser = mysqli_fetch_assoc($resCheck);
+mysqli_stmt_close($stmtCheck);
 
-    if ($existingUser) {
-        $stmtUpdate = $pdo->prepare("
-            UPDATE m3us3r 
-            SET password = :pass, rol = :rol, bancos_permitidos = :bancos 
-            WHERE usuario = :user
-        ");
-        $stmtUpdate->execute([
-            ':pass'   => $nuevaClave,
-            ':rol'    => $rol,
-            ':bancos' => $bancos,
-            ':user'   => $nuevoUsuario
-        ]);
-
+if ($existingUser) {
+    // ACTUALIZAMOS permisos y clave si el usuario ya existía
+    $queryUpdate = "UPDATE m3us3r SET password = ?, rol = ?, bancos_permitidos = ? WHERE usuario = ?";
+    $stmtUpdate = mysqli_prepare($conexion, $queryUpdate);
+    mysqli_stmt_bind_param($stmtUpdate, "ssss", $nuevaClave, $rol, $bancos, $nuevoUsuario);
+    
+    if (mysqli_stmt_execute($stmtUpdate)) {
         echo json_encode([
             'status'  => 'OK',
             'accion'  => 'actualizado',
             'mensaje' => "Permisos de '{$nuevoUsuario}' actualizados correctamente."
         ]);
     } else {
-        $stmtInsert = $pdo->prepare("
-            INSERT INTO m3us3r (usuario, password, rol, bancos_permitidos) 
-            VALUES (:user, :pass, :rol, :bancos)
-        ");
-        $stmtInsert->execute([
-            ':user'   => $nuevoUsuario,
-            ':pass'   => $nuevaClave,
-            ':rol'    => $rol,
-            ':bancos' => $bancos
-        ]);
-
+        echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error al actualizar: ' . mysqli_error($conexion)]);
+    }
+    mysqli_stmt_close($stmtUpdate);
+} else {
+    // INSERTAMOS un usuario completamente nuevo
+    $queryInsert = "INSERT INTO m3us3r (usuario, password, rol, bancos_permitidos) VALUES (?, ?, ?, ?)";
+    $stmtInsert = mysqli_prepare($conexion, $queryInsert);
+    mysqli_stmt_bind_param($stmtInsert, "ssss", $nuevoUsuario, $nuevaClave, $rol, $bancos);
+    
+    if (mysqli_stmt_execute($stmtInsert)) {
+        $idNuevo = mysqli_insert_id($conexion);
         echo json_encode([
             'status'  => 'OK',
             'accion'  => 'creado',
-            'id_nuevo'=> $pdo->lastInsertId(),
+            'id_nuevo'=> $idNuevo,
             'mensaje' => "Usuario '{$nuevoUsuario}' creado con éxito."
         ]);
+    } else {
+        echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error al insertar: ' . mysqli_error($conexion)]);
     }
-
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'ERROR', 'mensaje' => 'Error SQL: ' . $e->getMessage()]);
+    mysqli_stmt_close($stmtInsert);
 }
+
+// Cerrar conexión limpiamente
+mysqli_close($conexion);
 ?>

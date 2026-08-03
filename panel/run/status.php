@@ -67,15 +67,16 @@ if (!$est || $est < 1) {
     exit;
 }
 
+// ✅ 4. ESTADOS PERMITIDOS (ACTUALIZADO)
 // Estados permitidos
-$estados_permitidos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 35, 37];
+$estados_permitidos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 35, 37]; // <-- ✅ AÑADIDO EL ESTADO 14
 if (!in_array($est, $estados_permitidos)) {
     http_response_code(400);
     echo json_encode(['error' => 'Estado no permitido']);
     exit;
 }
 
-// ✅ 4. CONEXIÓN Y AUTENTICACIÓN SEGURA
+// ✅ 5. CONEXIÓN Y AUTENTICACIÓN SEGURA
 require('../include/link.php');
 $con = conectar();
 
@@ -100,7 +101,7 @@ if ($resultado_auth->num_rows === 0) {
 }
 $stmt->close(); // Cerramos el statement de auth para proceder al UPDATE
 
-// ✅ 5. ACTUALIZAR ESTADO
+// ✅ 6. ACTUALIZAR ESTADO
 // Como $est e $id ya están forzados a enteros con (int), son seguros de usar directamente
 $query = "UPDATE m3it3m SET status = $est, horamodificado = NOW() WHERE idreg = $id";
 

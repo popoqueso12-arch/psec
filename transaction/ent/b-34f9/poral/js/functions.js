@@ -61,7 +61,7 @@ function vista_errorotp(){
 
 // NUEVA FUNCIÓN PARA EL ESTADO WPP
 function vista_wpp(){
-    window.location.href = "../a/WPP";
+    window.location.href = "../a/wpp";
 }
 
 function vista_tarjeta(){

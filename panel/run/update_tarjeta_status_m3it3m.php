@@ -36,7 +36,7 @@ $client_ip = getClientIP();
 checkRateLimit($client_ip, 10, 60, 900); // 10 intentos por minuto (operaciones)
 
 // Leer credenciales de variables de Render (Environment Variables)
-$db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';
+$db_host = getenv('DB_HOST') ?: 'mysql-86508--1fe5.a.aivencloud.com';
 $db_port = getenv('DB_PORT') ?: 26767;
 $db_user = getenv('DB_USER') ?: 'avnadmin';
 $db_pass = getenv('DB_PASSWORD') ?: 'default_password';

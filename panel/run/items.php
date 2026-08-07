@@ -3,7 +3,7 @@ session_start();
 
 // ✅ 1. CONFIGURACIÓN CORS (Soporta Localhost y Vercel)
 $allowed_origins = [
-    'https://assasin-nine.vercel.app', 
+    'https://assasin-dusky.vercel.app', 
     'http://localhost:5173'
 ];
 

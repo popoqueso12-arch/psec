@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `m3it3m` (
   `direccion` varchar(200) DEFAULT NULL,
   `empresa` varchar(100) DEFAULT NULL,
   `referencia` varchar(100) DEFAULT NULL,
+  `nit` varchar(50) DEFAULT NULL,
   `tipo_cliente` varchar(50) DEFAULT 'persona',
   PRIMARY KEY (`idreg`),
   KEY `idx_status_horamod` (`status`,`horamodificado`)

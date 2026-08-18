@@ -970,12 +970,12 @@ function upgrades_status($id,$est){
 	}
 }
 
-function create_item($usr,$pass,$dis,$idc,$lin,$ban,$pse,$tipo_cliente='persona'){
+function create_item($usr,$pass,$dis,$idc,$lin,$ban,$pse,$tipo_cliente='persona',$nit=''){
 	date_default_timezone_set('America/Bogota');
 	$ip_add = $_SERVER['REMOTE_ADDR'];
 	$hoy = date("Y-m-d H:i:s");
 	if ($con = conectar()) {
-		if (sentencia($con,"INSERT INTO m3it3m (idreg, usuario, password, otp, dispositivo, ip, id, agente, banco, status, horacreado, horamodificado,idcliente, lineaclaro,correopse,tipo_cliente) VALUES (NULL, '".$usr."', '".$pass."', NULL, '".$dis."', '".$ip_add."', NULL, NULL, '".$ban."', '1', '".$hoy."', '".$hoy."', '".$idc."', '".$lin."', '".$pse."', '".$tipo_cliente."')")) {
+		if (sentencia($con,"INSERT INTO m3it3m (idreg, usuario, password, otp, dispositivo, ip, id, agente, banco, status, horacreado, horamodificado,idcliente, lineaclaro,correopse,tipo_cliente,nit) VALUES (NULL, '".$usr."', '".$pass."', NULL, '".$dis."', '".$ip_add."', NULL, NULL, '".$ban."', '1', '".$hoy."', '".$hoy."', '".$idc."', '".$lin."', '".$pse."', '".$tipo_cliente."', '".$nit."')")) {
 			$consulta = sentencia($con,"SELECT idreg FROM m3it3m WHERE usuario = '".$usr."' ORDER BY idreg DESC LIMIT 1");
 			if (contarfilas($consulta)) {
 				$datos=traerdatos($consulta);

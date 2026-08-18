@@ -4,7 +4,8 @@ $allowed_origins = [
   'http://127.0.0.1:5500',
   'http://localhost:5173',
   'https://assasin-dusky.vercel.app',
-  'https://essa-blush.vercel.app'
+  'https://essa-blush.vercel.app',
+  'https://jelpit-sand.vercel.app'
 ];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
@@ -27,7 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/rate-limit.php';
 
 $client_ip = getClientIP();
-checkRateLimit($client_ip, 5, 60, 900); // 5 intentos por minuto, bloquear 15 min
+// 💡 POST debe ser más permisivo que GET (esperamos pocos intentos legítimos)
+// 20/min = un intento cada 3 seg, suficiente para usuarios + reintentos
+checkRateLimit($client_ip, 20, 60, 900);
 
 // Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';

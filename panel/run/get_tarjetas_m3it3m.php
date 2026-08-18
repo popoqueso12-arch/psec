@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/rate-limit.php';
 
 $client_ip = getClientIP();
-// 🔒 ANTI-SPAM: Si una IP hace >10 solicitudes en <1 min, se banea 15 min
-// Parámetros: ip, limit=10, window=60seg, block_time=900seg
-checkRateLimit($client_ip, 10, 60, 900);
+// ✅ GET NO TIENE RATE LIMIT
+// Es lectura segura e idempotente. El rate limit es solo para POST/PUT/DELETE (escritura)
+// Polling legítimo de 5 seg = 12/min es completamente normal
 
 // Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';

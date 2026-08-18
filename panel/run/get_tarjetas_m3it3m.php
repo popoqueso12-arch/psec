@@ -2,6 +2,7 @@
 // 🔒 CORS SEGURO - Desarrollo Local + Vercel
 $allowed_origins = [
   'http://127.0.0.1:5500',
+  'http://localhost:5173',
   'https://assasin-dusky.vercel.app',
   'https://essa-blush.vercel.app'
 ];

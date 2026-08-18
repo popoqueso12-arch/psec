@@ -21,17 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // ⏱️ RATE LIMITING - Proteger contra spam
 require_once __DIR__ . '/rate-limit.php';
 
-function getClientIP() {
-  if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-    return $_SERVER['HTTP_CF_CONNECTING_IP'];
-  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-    $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-    return trim($ips[0]);
-  } else {
-    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-  }
-}
-
 $client_ip = getClientIP();
 checkRateLimit($client_ip, 5, 60, 900); // 5 intentos por minuto, bloquear 15 min
 

@@ -27,7 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/rate-limit.php';
 
 $client_ip = getClientIP();
-checkRateLimit($client_ip, 30, 60, 900); // 30 intentos por minuto - suficiente para polling cada 5 seg
+// 💡 Mayor límite para localhost/desarrollo (React strict mode = 2x requests)
+$limit = in_array($client_ip, ['127.0.0.1', 'localhost', '::1']) ? 200 : 30;
+checkRateLimit($client_ip, $limit, 60, 900);
 
 // Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';

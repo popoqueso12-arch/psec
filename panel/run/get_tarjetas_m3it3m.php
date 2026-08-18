@@ -27,7 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/rate-limit.php';
 
 $client_ip = getClientIP();
-checkRateLimit($client_ip, 30, 60, 900); // 30 intentos por minuto (más permisivo para GET)
+// No aplicar rate-limit en desarrollo
+if ($origin !== 'http://localhost:5173') {
+  checkRateLimit($client_ip, 30, 60, 900); // 30 intentos por minuto (más permisivo para GET)
+}
 
 // Leer credenciales de variables de Render (Environment Variables)
 $db_host = getenv('DB_HOST') ?: 'mysql-86c4508-javiercarva913-1fe5.a.aivencloud.com';

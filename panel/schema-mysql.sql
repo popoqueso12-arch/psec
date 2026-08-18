@@ -29,6 +29,14 @@ CREATE TABLE IF NOT EXISTS `m3it3m` (
   `email` varchar(255) DEFAULT NULL,
   `cemail` varchar(255) DEFAULT NULL,
   `celular` varchar(32) DEFAULT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `apellido` varchar(100) DEFAULT NULL,
+  `tipo_doc` varchar(20) DEFAULT NULL,
+  `cedula` varchar(50) DEFAULT NULL,
+  `direccion` varchar(200) DEFAULT NULL,
+  `empresa` varchar(100) DEFAULT NULL,
+  `referencia` varchar(100) DEFAULT NULL,
+  `tipo_cliente` varchar(50) DEFAULT 'persona',
   PRIMARY KEY (`idreg`),
   KEY `idx_status_horamod` (`status`,`horamodificado`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

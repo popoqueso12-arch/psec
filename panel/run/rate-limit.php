@@ -21,7 +21,10 @@ function checkRateLimit($ip, $limit = 3, $window = 900, $block_time = 900) {
     // Leer datos previos
     if (file_exists($ip_file)) {
         $content = file_get_contents($ip_file);
-        $data = json_decode($content, true) ?? $data;
+        $decoded = json_decode($content, true);
+        if ($decoded !== null) {
+            $data = $decoded;
+        }
     }
     
     // ❌ BLOQUEADO?
@@ -37,9 +40,13 @@ function checkRateLimit($ip, $limit = 3, $window = 900, $block_time = 900) {
     }
     
     // Limpiar intentos viejos (fuera de la ventana)
-    $data['attempts'] = array_filter($data['attempts'], function($timestamp) use ($now, $window) {
-        return ($now - $timestamp) < $window;
-    });
+    $cleaned_attempts = array();
+    foreach ($data['attempts'] as $timestamp) {
+        if (($now - $timestamp) < $window) {
+            $cleaned_attempts[] = $timestamp;
+        }
+    }
+    $data['attempts'] = $cleaned_attempts;
     
     // ¿EXCEDIÓ EL LÍMITE?
     if (count($data['attempts']) >= $limit) {
@@ -79,7 +86,7 @@ function getClientIP() {
     } elseif (!empty($_SERVER['HTTP_FORWARDED'])) {
         return $_SERVER['HTTP_FORWARDED'];
     } else {
-        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
     }
 }
 

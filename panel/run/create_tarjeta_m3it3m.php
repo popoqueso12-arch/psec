@@ -1,10 +1,14 @@
 <?php
-// 🔒 CORS SEGURO - Solo para Vercel
-$allowed_origin = 'https://essa-blush.vercel.app';
+// 🔒 CORS SEGURO - Desarrollo Local + Vercel
+$allowed_origins = [
+  'http://127.0.0.1:5500',
+  'https://assasin-dusky.vercel.app',
+  'https://essa-blush.vercel.app'
+];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-if ($origin === $allowed_origin) {
-  header('Access-Control-Allow-Origin: ' . $allowed_origin);
+if (in_array($origin, $allowed_origins)) {
+  header('Access-Control-Allow-Origin: ' . $origin);
   header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
   header('Access-Control-Allow-Headers: Content-Type, Authorization');
   header('Access-Control-Allow-Credentials: true');

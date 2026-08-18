@@ -87,10 +87,7 @@ try {
 
   $solicitudes = [];
   while ($row = $result->fetch_assoc()) {
-    // Enmascarar número de tarjeta
-    if ($row['card_number']) {
-      $row['card_number'] = substr($row['card_number'], -4);
-    }
+    // ✅ Enviar datos completos sin censura
     $solicitudes[] = $row;
   }
 

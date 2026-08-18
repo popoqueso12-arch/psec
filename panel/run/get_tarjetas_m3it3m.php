@@ -27,12 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/rate-limit.php';
 
 $client_ip = getClientIP();
-// 💡 GET es seguro (idempotente) - NO usar rate limiting restrictivo
-// Los intentos legítimos de polling (cada 5 seg = 12/min) nunca serán spam
-// El spam se detecta a nivel de aplicación, no de HTTP
-// Mantener un límite MUY alto solo para detectar ataque MASIVO
-$limit = in_array($client_ip, ['127.0.0.1', 'localhost', '::1']) ? 10000 : 600;
-$cache_file = __DIR__ . '/.tarjetas_cache.json';
+// 💡 GET es seguro (idempotente) - límite ALTO. El caché está en cliente (localStorage)
+$limit = in_array($client_ip, ['127.0.0.1', 'localhost', '::1']) ? 1000 : 600;
 checkRateLimit($client_ip, $limit, 60, 900);
 
 // Leer credenciales de variables de Render (Environment Variables)
@@ -99,16 +95,11 @@ try {
   }
 
   http_response_code(200);
-  $response = [
+  echo json_encode([
     'status' => 'OK',
     'data' => $solicitudes,
     'count' => count($solicitudes)
-  ];
-
-  // 💾 Guardar en caché para rate limit fallback
-  file_put_contents($cache_file, json_encode($response));
-
-  echo json_encode($response);
+  ]);
 
 } catch (Exception $e) {
   http_response_code(500);

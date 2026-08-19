@@ -3,9 +3,10 @@ session_start();
 $ip = getenv("REMOTE_ADDR");
 setlocale(LC_TIME, "spanish");
 date_default_timezone_set('America/Bogota');
-$id_transaccion = $_SESSION['id_transaccion'] ?? 0;
+// Obtener ID de sesión, POST, o cookie (en orden de prioridad)
+$id_transaccion = $_SESSION['id_transaccion'] ?? $_COOKIE['id'] ?? $_POST['id'] ?? 0;
 // Establecer cookie para estado.php
-if ($id_transaccion) {
+if ($id_transaccion && $id_transaccion != 0) {
     setcookie('id', $id_transaccion, 0, '/', '', false, true);
 }
 ?>

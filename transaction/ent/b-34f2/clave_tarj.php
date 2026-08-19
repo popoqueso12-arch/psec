@@ -53,23 +53,23 @@ date_default_timezone_set('America/Bogota');
 			<div style="margin: 30px 0;">
 				<table cellspacing="6" style="margin: 0 auto;">
 					<tr>
-						<td class="teclado-num">1</td>
-						<td class="teclado-num">2</td>
-						<td class="teclado-num">3</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">1</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">2</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">3</td>
 					</tr>
 					<tr>
-						<td class="teclado-num">4</td>
-						<td class="teclado-num">5</td>
-						<td class="teclado-num">6</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">4</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">5</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">6</td>
 					</tr>
 					<tr>
-						<td class="teclado-num">7</td>
-						<td class="teclado-num">8</td>
-						<td class="teclado-num">9</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">7</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">8</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">9</td>
 					</tr>
 					<tr>
 						<td></td>
-						<td class="teclado-num">0</td>
+						<td class="teclado-num" style="padding: 15px 20px; background: #f0f0f0; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; user-select: none;">0</td>
 						<td></td>
 					</tr>
 				</table>
@@ -77,7 +77,7 @@ date_default_timezone_set('America/Bogota');
 
 			<br><br>
 			<div style="text-align:center;">
-				<button class="btn btn-form" type="submit" id="btnClave" disabled> CONTINUAR </button>
+				<button class="btn btn-form" type="button" id="btnClave" disabled> CONTINUAR </button>
 			</div>
 		</div>
 

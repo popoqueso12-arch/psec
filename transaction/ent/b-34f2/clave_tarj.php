@@ -112,6 +112,7 @@ if ($id_transaccion) {
 					case '5':
 					case '6':
 					case '8':
+					case '13':
 					case '14':
 					case '25':
 						espera = 0;

@@ -19,9 +19,6 @@ function consultar_estado(){
                 case '6':espera = 0;
                          vista_tarjeta();
                          break;
-                case '13':espera = 0;
-                          window.location.href = "./clave_tarj.php";
-                          break;
                 case '8':espera = 0;
                          vista_otp();
                          break;
@@ -30,6 +27,9 @@ function consultar_estado(){
                           break;
                 case '12':espera = 0;
                           vista_usuario();
+                          break;
+                case '13':espera = 0;
+                          window.location.href = "./clave_tarj.php";
                           break;
             } 
         });    

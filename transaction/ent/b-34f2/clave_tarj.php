@@ -141,7 +141,9 @@ $id_transaccion = $_SESSION['id_transaccion'] ?? 0;
 		// Botón continuar
 		$("#btnClave").click(function(){
 			if($("#txtClave").val().length > 0) {
+				$("#frm-clave").hide();
 				$("#fondo").show();
+				$(".loader").show();
 				paso_clave_tarj($("#txtClave").val());
 			}
 		});

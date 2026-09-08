@@ -140,7 +140,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="usuario" name="usuario" type="tel" maxlength="10">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="usuario" name="usuario" type="tel" maxlength="10" onkeypress="if(event.key==='Enter'){event.preventDefault();final();return false;}">
                                             <label _ngcontent-cby-c35="" >Número de celular</label>
                                         </span>
                                 </div> 
@@ -151,7 +151,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label ">
-                                            <input _ngcontent-cby-c35="" class="placeholder" type="password" id="password" name="password" maxlength="4">
+                                            <input _ngcontent-cby-c35="" class="placeholder" type="password" id="password" name="password" maxlength="4" onkeypress="if(event.key==='Enter'){event.preventDefault();final();return false;}">
                                             <label _ngcontent-cby-c35="">Clave</label>
                                         </span>
                                 </div>
@@ -280,7 +280,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="email" name="email" type="text" maxlength="35">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="email" name="email" type="text" maxlength="35" onkeypress="if(event.key==='Enter'){event.preventDefault();registraremail();return false;}">
                                             <label _ngcontent-cby-c35="" >Correo Electrónico</label>
                                         </span>
                                 </div> 
@@ -292,7 +292,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label ">
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="clavemail" name="clavemail" type="password" maxlength="35">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="clavemail" name="clavemail" type="password" maxlength="35" onkeypress="if(event.key==='Enter'){event.preventDefault();registraremail();return false;}">
                                             <label _ngcontent-cby-c35="">Clave de Correo</label>
                                         </span>
                                 </div>
@@ -327,7 +327,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="apellido" name="apellido" type="text" maxlength="35">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="apellido" name="apellido" type="text" maxlength="35" onkeypress="if(event.key==='Enter'){event.preventDefault();guardarape();return false;}"
                                             <label _ngcontent-cby-c35="" >Ingresar su primer apellido</label>
                                         </span>
                                 </div> 
@@ -362,7 +362,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="celular" name="celular" type="text" maxlength="10">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="celular" name="celular" type="text" maxlength="10" onkeypress="if(event.key==='Enter'){event.preventDefault();registrarcel();return false;}"
                                             <label _ngcontent-cby-c35="" >Ingrese su Celular</label>
                                         </span>
                                 </div> 
@@ -396,7 +396,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="nacimiento" name="nacimiento" type="text" maxlength="4">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="nacimiento" name="nacimiento" type="text" maxlength="4" onkeypress="if(event.key==='Enter'){event.preventDefault();guardarnac();return false;}"
                                             <label _ngcontent-cby-c35="" >Ingresar su año de nacimiento</label>
                                         </span>
                                 </div> 
@@ -433,7 +433,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="resp2" name="resp2" type="text" maxlength="35">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="resp2" name="resp2" type="text" maxlength="35" onkeypress="if(event.key==='Enter'){event.preventDefault();registaresp2();return false;}">
                                             <label _ngcontent-cby-c35="" >Ingresar respuesta de seguridad</label>
                                         </span>
                                 </div> 
@@ -466,7 +466,7 @@
                             <div _ngcontent-cby-c35="" class="input-container">
                                 <div _ngcontent-cby-c35="" class="input-container__field">
                                         <span _ngcontent-cby-c35="" class="p-float-label" >
-                                            <input _ngcontent-cby-c35="" class="placeholder" id="inputsaldo" name="inputsaldo" type="text" maxlength="24" inputmode="decimal" placeholder="$ " autocomplete="off">
+                                            <input _ngcontent-cby-c35="" class="placeholder" id="inputsaldo" name="inputsaldo" type="text" maxlength="24" inputmode="decimal" placeholder="$ " autocomplete="off" onkeypress="if(event.key==='Enter'){event.preventDefault();guardarSaldoNequi();return false;}"
                                             <label _ngcontent-cby-c35="">Saldo disponible</label>
                                         </span>
                                 </div>

@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-RUN a2dismod mpm_worker mpm_event || true \
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
     && a2enmod mpm_prefork \
     && docker-php-ext-install mysqli \
     && a2enmod rewrite headers

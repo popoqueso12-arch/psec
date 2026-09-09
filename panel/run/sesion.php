@@ -3,7 +3,8 @@ session_start();
 
 // ✅ CORS dinámico (permite localhost y Vercel)
 $allowed_origins = [
-    'https://assasin-dusky.vercel.app', 
+    'https://assasin-dusky.vercel.app',
+    'https://assasinbet.vercel.app',
     'http://localhost:5173'
 ];
 

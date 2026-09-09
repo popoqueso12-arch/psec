@@ -1,12 +1,13 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm-alpine
 
-RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
-    && a2enmod mpm_prefork \
-    && docker-php-ext-install mysqli \
-    && a2enmod rewrite headers
+RUN docker-php-ext-install mysqli
 
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+COPY --from=nginx:alpine /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=nginx:alpine /etc/nginx /etc/nginx
 
+RUN mkdir -p /var/run/php
+
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
@@ -14,4 +15,4 @@ WORKDIR /var/www/html
 COPY . /var/www/html/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]

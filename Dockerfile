@@ -1,11 +1,9 @@
 FROM php:8.2-fpm-alpine
 
-RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install mysqli && \
+    apk add --no-cache nginx
 
-COPY --from=nginx:alpine /usr/sbin/nginx /usr/sbin/nginx
-COPY --from=nginx:alpine /etc/nginx /etc/nginx
-
-RUN mkdir -p /var/run/php
+RUN mkdir -p /var/run/php /var/run/nginx /var/log/nginx
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

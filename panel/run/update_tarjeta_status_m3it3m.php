@@ -56,6 +56,9 @@ if ($mysqli->connect_error) {
   exit;
 }
 
+// Ampliar columna status si es necesario (una sola vez, falla silenciosamente si ya está bien)
+@$mysqli->query("ALTER TABLE m3it3m MODIFY COLUMN status VARCHAR(50)");
+
 // Obtener datos
 $id = $_POST['id'] ?? '';
 $new_status = $_POST['status'] ?? '';

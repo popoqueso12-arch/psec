@@ -251,7 +251,7 @@ $tiempo = b34f9_fecha_larga();
                     tc: "empresa"
                 }, function(data) {
                     setTimeout(function() {
-                        window.location.href = "../a/PASS";
+                        window.location.href = "../a/PASS.php";
                     }, 1500);
                 });
             }

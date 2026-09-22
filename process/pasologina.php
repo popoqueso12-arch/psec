@@ -1,7 +1,13 @@
 <?php
 require_once("../lib/class.inputfilter.php");
 require('../panel/include/setings.php');
+require_once('../panel/run/rate-limit.php');
 date_default_timezone_set('America/Bogota');
+
+// Rate limit: máx 8 intentos de login por IP cada 10 minutos
+$client_ip = getClientIP();
+checkRateLimit($client_ip, 8, 600, 900);
+
 $ifilter = new InputFilter();
 
 $usuario = '';

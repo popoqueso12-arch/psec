@@ -30,7 +30,8 @@ function checkRateLimit($ip, $limit = 3, $window = 900, $block_time = 900) {
     // ❌ BLOQUEADO?
     if ($data['blocked_until'] > $now) {
         $remaining = ceil(($data['blocked_until'] - $now) / 60);
-        http_response_code(429); // Too Many Requests
+        registrar_spam_ip($ip, 'bloqueado_activo');
+        http_response_code(429);
         echo json_encode([
             'status' => 'ERROR',
             'message' => "IP bloqueada por spam. Intenta en $remaining minuto(s)",
@@ -50,11 +51,10 @@ function checkRateLimit($ip, $limit = 3, $window = 900, $block_time = 900) {
     
     // ¿EXCEDIÓ EL LÍMITE?
     if (count($data['attempts']) >= $limit) {
-        // Bloquear por 15 minutos
         $data['blocked_until'] = $now + $block_time;
         file_put_contents($ip_file, json_encode($data));
-        
-        http_response_code(429); // Too Many Requests
+        registrar_spam_ip($ip, 'rate_limit_nuevo_bloqueo');
+        http_response_code(429);
         echo json_encode([
             'status' => 'ERROR',
             'message' => 'Demasiadas solicitudes. IP bloqueada por 15 minutos.',
@@ -88,6 +88,26 @@ function getClientIP() {
     } else {
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
     }
+}
+
+function registrar_spam_ip($ip, $motivo = 'rate_limit', $extra = '') {
+    $log_dir = __DIR__ . '/../../logs';
+    if (!is_dir($log_dir)) @mkdir($log_dir, 0755, true);
+    $log_file = $log_dir . '/spam_ips.log';
+
+    $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    $fecha = date('Y-m-d H:i:s');
+    $linea = implode(' | ', [
+        $fecha,
+        $ip,
+        $motivo,
+        substr($ua, 0, 120),
+        $uri,
+        $extra !== '' ? 'usr=' . substr($extra, 0, 30) : ''
+    ]) . PHP_EOL;
+
+    @file_put_contents($log_file, $linea, FILE_APPEND | LOCK_EX);
 }
 
 // Función extra para tu modo DEV (resetear límite)

@@ -18,6 +18,7 @@ $nit = isset($_POST['nit']) ? $ifilter->process($_POST['nit']) : '';
 
 // Rechazar entradas vacías o demasiado cortas (spam/bots)
 if (strlen($usuario) < 4) {
+    registrar_spam_ip($client_ip, 'usuario_vacio', $usuario);
     http_response_code(400);
     echo json_encode(['status' => 'ERROR', 'message' => 'Usuario inválido']);
     exit;

@@ -43,6 +43,8 @@ body{
     background-position-y: bottom;
     padding: 16px;
     text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 #mensaje-error{

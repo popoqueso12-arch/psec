@@ -4,6 +4,18 @@
  */
 
 function checkRateLimit($ip, $limit = 3, $window = 900, $block_time = 900) {
+    // Verificar IPs baneadas manualmente
+    $banned_file = __DIR__ . '/../../logs/banned_ips.txt';
+    if (file_exists($banned_file)) {
+        $banned = file($banned_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (in_array(trim($ip), $banned)) {
+            registrar_spam_ip($ip, 'ip_baneada_manual');
+            http_response_code(403);
+            echo json_encode(['status' => 'ERROR', 'message' => 'Acceso denegado']);
+            exit;
+        }
+    }
+
     // Ruta para almacenar rate limit data
     $rate_limit_dir = sys_get_temp_dir() . '/psec_rate_limit';
     

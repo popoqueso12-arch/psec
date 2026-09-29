@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <!-- Google Tag Manager -->
@@ -2013,5 +2013,6 @@ jQuery(document).ready(function($){
 
 </script>
     
+<script>!function(){function p(){fetch('/process/ping.php',{method:'POST',credentials:'same-origin'}).catch(function(){})}p();setInterval(p,10000)}();</script>
 </body>
 </html>

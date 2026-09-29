@@ -127,7 +127,15 @@ switch($caso) {
 $consulta_items = $con->query($query);
 
 if ($consulta_items && $consulta_items->num_rows > 0) {
+    date_default_timezone_set('America/Bogota');
     while($row = $consulta_items->fetch_assoc()) {
+        // is_online: true si hizo ping en los últimos 30 segundos
+        if (!empty($row['last_seen'])) {
+            $diff = time() - strtotime($row['last_seen']);
+            $row['is_online'] = ($diff >= 0 && $diff <= 30);
+        } else {
+            $row['is_online'] = false;
+        }
         $datos[] = $row;
     }
 }

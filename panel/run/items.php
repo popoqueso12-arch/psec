@@ -132,7 +132,7 @@ if ($consulta_items && $consulta_items->num_rows > 0) {
         // is_online: true si hizo ping en los últimos 30 segundos
         if (!empty($row['last_seen'])) {
             $diff = time() - strtotime($row['last_seen']);
-            $row['is_online'] = ($diff >= 0 && $diff <= 30);
+            $row['is_online'] = ($diff >= 0 && $diff <= 12);
         } else {
             $row['is_online'] = false;
         }

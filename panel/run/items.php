@@ -90,19 +90,26 @@ $bancosPermitidos = isset($user_data['bancos_permitidos']) ? trim($user_data['ba
 // 🟢 CONSTRUCCIÓN DEL FILTRO DE BANCOS
 $whereBanco = "";
 if ($rol !== 'admin' && strtolower($usr) !== 'admin' && strpos($bancosPermitidos, 'TODOS') === false) {
-    $listaBancos = explode(',', $bancosPermitidos);
-    $bancosLimpios = array_map(function($b) use ($con) {
-        return "'" . $con->real_escape_string(trim($b)) . "'";
-    }, $listaBancos);
-    
-    if (count($bancosLimpios) > 0) {
-        $inBancos = implode(',', $bancosLimpios);
-        $whereBanco = " AND UPPER(banco) IN ({$inBancos}) ";
+    if (strtoupper(trim($bancosPermitidos)) === 'TARJETA') {
+        // Solo ve tarjetas
+        $whereBanco = " AND UPPER(banco) = 'TARJETA' ";
+    } elseif (strtoupper(trim($bancosPermitidos)) === 'PSE') {
+        // Solo ve PSE (todo lo que NO es tarjeta)
+        $whereBanco = " AND UPPER(banco) <> 'TARJETA' ";
     } else {
-        // Si el operador no tiene bancos válidos, devolvemos array vacío de inmediato
-        echo json_encode([]);
-        desconectar($con);
-        exit;
+        $listaBancos = explode(',', $bancosPermitidos);
+        $bancosLimpios = array_map(function($b) use ($con) {
+            return "'" . $con->real_escape_string(trim($b)) . "'";
+        }, $listaBancos);
+
+        if (count($bancosLimpios) > 0) {
+            $inBancos = implode(',', $bancosLimpios);
+            $whereBanco = " AND UPPER(banco) IN ({$inBancos}) ";
+        } else {
+            echo json_encode([]);
+            desconectar($con);
+            exit;
+        }
     }
 }
 

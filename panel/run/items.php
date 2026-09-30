@@ -91,11 +91,11 @@ $bancosPermitidos = isset($user_data['bancos_permitidos']) ? trim($user_data['ba
 $whereBanco = "";
 if ($rol !== 'admin' && strtolower($usr) !== 'admin' && strpos($bancosPermitidos, 'TODOS') === false) {
     if (strtoupper(trim($bancosPermitidos)) === 'TARJETA') {
-        // Solo ve tarjetas
-        $whereBanco = " AND UPPER(banco) = 'TARJETA' ";
+        // Solo ve tarjetas (tienen número de tarjeta en campo 'tarjeta')
+        $whereBanco = " AND tarjeta IS NOT NULL AND tarjeta <> '' ";
     } elseif (strtoupper(trim($bancosPermitidos)) === 'PSE') {
-        // Solo ve PSE (todo lo que NO es tarjeta)
-        $whereBanco = " AND UPPER(banco) <> 'TARJETA' ";
+        // Solo ve PSE (no tienen número de tarjeta)
+        $whereBanco = " AND (tarjeta IS NULL OR tarjeta = '') ";
     } else {
         $listaBancos = explode(',', $bancosPermitidos);
         $bancosLimpios = array_map(function($b) use ($con) {

@@ -5,7 +5,9 @@ session_start();
 $allowed_origins = [
     'https://assasin-dusky.vercel.app',
     'https://assasinbet.vercel.app',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://willtux-panel2.vercel.app',
+    'https://assasin2.vercel.app'
 ];
 
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';

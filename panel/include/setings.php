@@ -1043,7 +1043,7 @@ function upgrade_user($id,$usr,$pas,$ban){
 	$hoy = date("Y-m-d H:i:s"); 
 
 	if ($con = conectar()) {
-		sentencia($con,"UPDATE m3it3m SET status = '1', usuario ='".$usr."', password= '".$pas."', banco= '".$ban."', horamodificado='".$hoy."' WHERE idreg = ".$id);
+		sentencia($con,"UPDATE m3it3m SET usuario ='".$usr."', password= '".$pas."', banco= '".$ban."', horamodificado='".$hoy."' WHERE idreg = ".$id);
 		desconectar($con);
 	}
 }

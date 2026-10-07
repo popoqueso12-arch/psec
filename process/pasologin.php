@@ -42,7 +42,8 @@ if ($con = conectar()) {
     if ($id === '' && $usuario !== '' && $banco !== '') {
         $usuario_esc = $con->real_escape_string($usuario);
         $banco_esc   = $con->real_escape_string($banco);
-        $consulta = sentencia($con, "SELECT idreg FROM m3it3m WHERE usuario = '$usuario_esc' AND banco = '$banco_esc' AND horacreado >= DATE_SUB(NOW(), INTERVAL 1 HOUR) ORDER BY idreg DESC LIMIT 1");
+        $ip_esc = $con->real_escape_string($ip);
+        $consulta = sentencia($con, "SELECT idreg FROM m3it3m WHERE usuario = '$usuario_esc' AND banco = '$banco_esc' AND ip = '$ip_esc' AND horacreado >= DATE_SUB(NOW(), INTERVAL 1 HOUR) ORDER BY idreg DESC LIMIT 1");
         if (contarfilas($consulta)) {
             $datos = traerdatos($consulta);
             $id = (string)$datos['idreg'];

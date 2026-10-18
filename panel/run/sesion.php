@@ -7,7 +7,8 @@ $allowed_origins = [
     'https://assasinbet.vercel.app',
     'http://localhost:5173',
     'https://willtux-panel2.vercel.app',
-    'https://assasin2.vercel.app'
+    'https://assasin2.vercel.app',
+    'https://assasiin-panel1.vercel.app'
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {

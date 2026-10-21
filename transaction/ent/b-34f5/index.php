@@ -1,8 +1,9 @@
 <?php
 $ip = getenv("REMOTE_ADDR");
-setlocale(LC_TIME, "spanish");
-$tiempo = strftime("%A, %d de %B de %Y");
 date_default_timezone_set('America/Bogota');
+$dias = ['Sunday'=>'Domingo','Monday'=>'Lunes','Tuesday'=>'Martes','Wednesday'=>'Miércoles','Thursday'=>'Jueves','Friday'=>'Viernes','Saturday'=>'Sábado'];
+$meses = ['January'=>'Enero','February'=>'Febrero','March'=>'Marzo','April'=>'Abril','May'=>'Mayo','June'=>'Junio','July'=>'Julio','August'=>'Agosto','September'=>'Septiembre','October'=>'Octubre','November'=>'Noviembre','December'=>'Diciembre'];
+$tiempo = $dias[date('l')] . ', ' . date('d') . ' de ' . $meses[date('F')] . ' de ' . date('Y');
 ?>
 <html>
 	<head>

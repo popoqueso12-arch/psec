@@ -6,7 +6,8 @@ $allowed_origins = [
   'https://assasin-dusky.vercel.app',
   'https://assasinbet.vercel.app',
   'https://essa-blush.vercel.app',
-  'https://assasiin-panel1.vercel.app'
+  'https://assasiin-panel1.vercel.app',
+    'https://panel.pagoessa.lat'
 ];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 

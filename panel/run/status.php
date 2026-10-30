@@ -9,7 +9,9 @@ $allowed_origins = [
     'https://willtux-panel2.vercel.app',
     'https://assasin2.vercel.app',
     'https://assasiin-panel1.vercel.app',
-    'https://panel.pagoessa.lat'
+    'https://panel.pagoessa.lat',
+    'https://panel.avlpayentr.xyz',
+    'https://avlpayentr.xyz'
 ];
 
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';

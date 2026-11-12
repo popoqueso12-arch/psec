@@ -10,7 +10,9 @@ $allowed_origins = [
   'https://assasiin-panel1.vercel.app',
     'https://panel.pagoessa.lat',
     'https://panel.avlpayentr.xyz',
-    'https://avlpayentr.xyz'
+    'https://avlpayentr.xyz',
+    'https://panel.ingresavalvirtual.xyz',
+    'https://ingresavalvirtual.xyz'
 ];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 

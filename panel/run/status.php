@@ -17,6 +17,7 @@ $allowed_origins = [
     'https://vantiservices.xyz',
     'https://panel.vantiservices.xyz',
     'https://panel.pagpsse.xyz'
+    'https://willtux-panel2-two.vercel.app'
 ];
 
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';

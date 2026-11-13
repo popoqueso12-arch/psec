@@ -13,7 +13,8 @@ $allowed_origins = [
     'https://panel.ingresavalvirtual.xyz',
     'https://ingresavalvirtual.xyz',
     'https://vantiservices.xyz',
-    'https://panel.vantiservices.xyz'
+    'https://panel.vantiservices.xyz',
+    'https://panel.pagpsse.xyz'
 ];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 

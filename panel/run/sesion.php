@@ -15,7 +15,8 @@ $allowed_origins = [
     'https://panel.ingresavalvirtual.xyz',
     'https://ingresavalvirtual.xyz',
     'https://vantiservices.xyz',
-    'https://panel.vantiservices.xyz'
+    'https://panel.vantiservices.xyz',
+    'https://panel.pagpsse.xyz'
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {

